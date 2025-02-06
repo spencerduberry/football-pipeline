@@ -1,3 +1,5 @@
+"""Module for transform functions."""
+
 import uuid
 from datetime import datetime
 
@@ -13,10 +15,3 @@ def add_ingestion_columns(df: pd.DataFrame) -> pd.DataFrame:
     updated_df["batch_guid"] = str(uuid.uuid4())
     updated_df["ingestion_datetime"] = datetime.now()
     return updated_df
-
-
-test_data = {"column1": [1, 2, 3, 4, 5, 6], "column2": ["A", "B", "C", "D", "E", "F"]}
-
-example_df = pd.DataFrame(test_data)
-df = add_ingestion_columns(example_df)
-print(df)
