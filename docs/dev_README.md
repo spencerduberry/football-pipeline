@@ -40,12 +40,7 @@ Use a simple football api to get stats on matches and stuff
 
 # Stage 1
 
-### raw layer
-- read the config from the yaml file
-- read the data from the source into a dataframe of sorts (pandas or polars)
-- add columns `["ingestion_datetime", "source_guid", "batch_guid"]`
-- write the data to parquet files with to
-
+## raw layer
 
 
 ### files needed
@@ -73,11 +68,7 @@ def read_yaml(path: str) -> dict:
     pass
 
 
-def create_dir_structure(root) -> bool:
-    pass
-
-
-def write_to_parquet(df, path: str) -> bool:
+def write_to_parquet(path: str, df) -> bool:
     pass
 
 
@@ -88,5 +79,33 @@ def extract_data(???) -> df:
 # transform.py
 def add_ingestion_columns(df) -> df:
     pass
+
+
+# pipelines
+def run_raw_layer_pipe(config_path: str) -> bool:
+    # read the yaml config
+    config = read_yaml(config_path)
+
+    # validate the config 
+    # TODO
+
+    # for each of the config settings:
+        # use the config to query the api
+
+        # check that the data is new - this could be as simple as only querying the data with yesterday's date
+        # if not exit early
+
+        # add the ingestion columns
+        df = add_ingestion_columns(df)
+
+        # create the directory path to where to save the data - os.makedir(path, exist_ok=True)
+
+        # write the data to the save path
+        result = write_to_parquet(path, df)
+
+        # ensure that successfully saved
+            # this could mean updating a log file/table with pipeline metadata
+        
+        # return result  
 
 ```
