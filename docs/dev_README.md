@@ -41,7 +41,11 @@ Use a simple football api to get stats on matches and stuff
 # Stage 1
 
 ## raw layer
-
+- at 1am UTC the git action will trigger the raw layer yaml
+- within that it will use the cli args that we set to read the config file
+- this will run the pipeline that will extract the data from the API to the raw layer
+- we'll save the raw data as parquet files
+    - over time we may need a smaller cron job that aggregates those parquet files each month or something to reduce the number of files and increase the compression ratio
 
 ### files needed
 ```
@@ -81,7 +85,7 @@ def add_ingestion_columns(df) -> df:
     pass
 
 
-# pipelines
+# pipelines.py
 def run_raw_layer_pipe(config_path: str) -> bool:
     # read the yaml config
     config = read_yaml(config_path)
