@@ -40,13 +40,12 @@ Use a simple football api to get stats on matches and stuff
 
 # Stage 1
 
-### raw layer
-- read the config from the yaml file
-- read the data from the source into a dataframe of sorts (pandas or polars)
-- add columns `["ingestion_datetime", "source_guid", "batch_guid"]`
-- write the data to parquet files with to
-
-
+## raw layer
+- at 1am UTC the git action will trigger the raw layer yaml
+- within that it will use the cli args that we set to read the config file
+- this will run the pipeline that will extract the data from the API to the raw layer
+- we'll save the raw data as parquet files
+    - over time we may need a smaller cron job that aggregates those parquet files each month or something to reduce the number of files and increase the compression ratio
 
 ### files needed
 ```
@@ -73,11 +72,7 @@ def read_yaml(path: str) -> dict:
     pass
 
 
-def create_dir_structure(root) -> bool:
-    pass
-
-
-def write_to_parquet(df, path: str) -> bool:
+def write_to_parquet(path: str, df) -> bool:
     pass
 
 
@@ -88,5 +83,33 @@ def extract_data(???) -> df:
 # transform.py
 def add_ingestion_columns(df) -> df:
     pass
+
+
+# pipelines.py
+def run_raw_layer_pipe(config_path: str) -> bool:
+    # read the yaml config
+    config = read_yaml(config_path)
+
+    # validate the config 
+    # TODO
+
+    # for each of the config settings:
+        # use the config to query the api
+
+        # check that the data is new - this could be as simple as only querying the data with yesterday's date
+        # if not exit early
+
+        # add the ingestion columns
+        df = add_ingestion_columns(df)
+
+        # create the directory path to where to save the data - os.makedir(path, exist_ok=True)
+
+        # write the data to the save path
+        result = write_to_parquet(path, df)
+
+        # ensure that successfully saved
+            # this could mean updating a log file/table with pipeline metadata
+        
+        # return result  
 
 ```
