@@ -1,3 +1,5 @@
+name: Run raw layer
+
 on:
   schedule:
     - cron: '0 1 * * *'
@@ -7,4 +9,4 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - name: Print successfully run at 1am UTC
-      run: echo "Successfully run"
+        run: echo "Successfully run"
