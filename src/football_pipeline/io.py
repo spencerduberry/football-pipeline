@@ -27,6 +27,6 @@ def read_yaml(path: str) -> dict:
 
         return data
 
-    except (yaml.YAMLError, Exception) as e:
+    except Exception as e:
         print(f"Error loading YAML from {path}: {e}")
         return {}
