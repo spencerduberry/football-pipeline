@@ -1,4 +1,9 @@
 repos:
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v4.2.1
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]
   - repo: https://github.com/astral-sh/uv-pre-commit
     # uv version.
     rev: 0.5.26
@@ -21,8 +26,3 @@ repos:
         language: python
         pass_filenames: false
         always_run: true
-  - repo: https://github.com/commitizen-tools/commitizen
-    rev: v1.17.0
-    hooks:
-      - id: commitizen
-        stages: [commit-msg]

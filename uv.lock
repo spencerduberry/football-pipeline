@@ -19,7 +19,7 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/c4/08/2a4db06ec3d203124c967fc89295e85a202e5cbbcdc08fd6a64b65217d1e/argcomplete-3.5.3-py3-none-any.whl", hash = "sha256:2ab2c4a215c59fd6caaff41a869480a23e8f6a5f910b266c1808037f4e375b61", size = 43569 },
 ]
 
-[[package]]
+[[package]] 
 name = "asttokens"
 version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
