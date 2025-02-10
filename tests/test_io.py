@@ -1,12 +1,10 @@
 from pathlib import Path
-import pytest
 
-import os
-print(f"Current working directory: {os.getcwd()}")
+import pytest
 
 from src.football_pipeline.io import read_yaml
 
-current_file_path = Path(__file__).resolve()
+current_file_path = Path(__file__)
 
 MOCK_DATA_DIR = current_file_path.parent / "mock_data" / "mock_yamls"
 
