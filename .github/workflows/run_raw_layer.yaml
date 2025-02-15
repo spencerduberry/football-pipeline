@@ -1,12 +1,15 @@
 name: Run raw layer
 
 on:
+  push:
+    branches:
+      - run
   schedule:
     - cron: '0 1 * * *'
 
 jobs:
   test_schedule:
     runs-on: ubuntu-latest
-    steps: 
+    steps:
       - name: Print successfully run at 1am UTC
         run: echo "Successfully run"
