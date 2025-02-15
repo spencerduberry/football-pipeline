@@ -1,5 +1,6 @@
 import os
 
+import pandas as pd
 import yaml
 
 
@@ -30,3 +31,22 @@ def read_yaml(path: str) -> dict:
     except Exception as e:
         print(f"Error loading YAML from {path}: {e}")
         return {}
+
+
+def write_to_parquet(path: str, df: pd.DataFrame) -> bool:
+    """
+    Takes a pandas dataframe, converts to parquet format and saves it in the specified path.
+    """
+    if not path.endswith(".parquet"):
+        print(
+            f"{path} is an invalid file name. Please specify a .parquet file extension"
+        )
+        return False
+
+    try:
+        df.to_parquet(path)
+    except Exception as e:
+        print(f"{path} is not a valid path: {e}")
+        return False
+
+    return True
