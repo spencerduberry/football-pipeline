@@ -1,9 +1,6 @@
 name: Run raw layer
 
 on:
-  push:
-    branches:
-      - run
   schedule:
     - cron: '0 1 * * *'
 
@@ -11,5 +8,8 @@ jobs:
   test_schedule:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
       - name: Print successfully run at 1am UTC
         run: echo "Successfully run"
