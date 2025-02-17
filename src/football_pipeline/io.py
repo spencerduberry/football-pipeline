@@ -33,7 +33,7 @@ def read_yaml(path: str) -> dict:
         return {}
 
 
-def write_to_parquet(path: str, df: pd.DataFrame) -> bool:
+def write_to_parquet(df: pd.DataFrame, path: str) -> bool:
     """
     Takes a pandas dataframe, converts to parquet format and saves it in the specified path.
     """

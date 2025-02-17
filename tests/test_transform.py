@@ -1,14 +1,6 @@
-import pandas as pd
 import pytest
 
 from src.football_pipeline.transform import add_ingestion_columns
-
-
-@pytest.fixture
-def get_mock_df_001():
-    return pd.DataFrame(
-        {"column1": [1, 2, 3, 4, 5, 6], "column2": ["A", "B", "C", "D", "E", "F"]}
-    )
 
 
 @pytest.mark.parametrize(
