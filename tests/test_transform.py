@@ -45,8 +45,6 @@ def test_add_ingestion_columns(
 ):
     inp_df = request.getfixturevalue(fixture_name)
     result = add_ingestion_columns(inp_df, batch_guid, date_time)
-    print("Columns in transformed DataFrame:", result.columns)
-    print(result.head())
     assert all(inp_df.eq(result[inp_df.columns]))  # the given data is unchanged
     assert result[column].nunique() == expected_unique_values
     assert (result["batch_guid"] == batch_guid).all()
