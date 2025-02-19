@@ -45,8 +45,7 @@ def write_to_parquet(df: pd.DataFrame, path: str) -> bool:
 
     try:
         df.to_parquet(path)
+        return True
     except Exception as e:
         print(f"{path} is not a valid path: {e}")
         return False
-
-    return True
