@@ -1,4 +1,6 @@
+import json
 import os
+import urllib.request
 
 import pandas as pd
 import yaml
@@ -49,3 +51,37 @@ def write_to_parquet(df: pd.DataFrame, path: str) -> bool:
     except Exception as e:
         print(f"{path} is not a valid path: {e}")
         return False
+
+
+def extract_stats(match: dict):
+    stats_dict = {
+        stat["identifier"]: (len(stat["a"]), len(stat["h"])) for stat in match["stats"]
+    }
+    match.update(stats_dict)
+    return match
+
+
+def extract_data(url: str, keys=None):
+    with urllib.request.urlopen(url) as response:
+        data = json.load(response)
+
+    if isinstance(data, dict):
+        data_dfs = {}
+
+        for key in keys:
+            data_dfs[key] = pd.DataFrame(data[key])
+
+        return data_dfs
+
+    elif isinstance(data, list):
+        unpacked_data = [extract_stats(match) for match in data]
+        data_dfs = pd.DataFrame(unpacked_data)
+        stat_cols = [stat["identifier"] for stat in data[0]["stats"]]
+        for stat in stat_cols:
+            data_dfs.rename(
+                columns={stat: f"{stat}_a", f"{stat}_h": f"{stat}_h"}, inplace=True
+            )
+
+        data_dfs.drop(columns=["stats"])
+
+        return data_dfs
