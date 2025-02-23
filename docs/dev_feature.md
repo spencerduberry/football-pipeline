@@ -41,6 +41,8 @@ run:
 uv sync ; uv venv ; source .venv/bin/activate
 ```
 
+# Complete the feature for the ticket
+Make the changes you need to make for the feature you're working on.
 
 # After you've made your changes
 
@@ -83,4 +85,32 @@ git push --set-upstream origin "your/branch_name"
 ```
 
 
-# Lazy approach
+# Lazy approach:
+Put this function in a scratch file and use it to combine all the steps above before working on the feature:
+```python
+def create_new_feature(branch_name: str) -> None:
+    cmd = [
+        "git checkout dev",
+        "git pull",
+        f'git checkout -b "{branch_name}"',
+        f'git push -u origin "{branch_name}"',
+        "uv venv",
+        "source .venv/bin/activate",
+        "uv sync --all-packages",
+    ]
+    print("\n".join(cmd))
+
+
+create_new_feature("feat/some_branch")
+```
+### output
+copy the output into your git bash shell and run it to set up your dev environment
+```shell
+git checkout dev
+git pull
+git checkout -b "feat/some_branch"
+git push -u origin "feat/some_branch"
+uv venv
+source .venv/bin/activate
+uv sync --all-packages
+```
