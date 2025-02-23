@@ -97,6 +97,7 @@ def create_new_feature(branch_name: str) -> None:
         "uv venv",
         "source .venv/bin/activate",
         "uv sync --all-packages",
+        "uv run pre-commit install",
     ]
     print("\n".join(cmd))
 
@@ -113,4 +114,5 @@ git push -u origin "feat/some_branch"
 uv venv
 source .venv/bin/activate
 uv sync --all-packages
+uv run pre-commit install
 ```
