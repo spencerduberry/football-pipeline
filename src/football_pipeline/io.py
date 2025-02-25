@@ -53,35 +53,47 @@ def write_to_parquet(df: pd.DataFrame, path: str) -> bool:
         return False
 
 
-def extract_stats(match: dict):
-    stats_dict = {
-        stat["identifier"]: (len(stat["a"]), len(stat["h"])) for stat in match["stats"]
-    }
-    match.update(stats_dict)
-    return match
+def extract_data(url_path: str, keys: list = None) -> dict[str, pd.DataFrame]:
+    """
+    Takes a URL, loads the contents into a JSON object, and returns a dict of DataFrames.
 
+    Args:
+        url_path (str): _description_
+        keys (list, optional): _description_. Defaults to None.
 
-def extract_data(url: str, keys=None):
-    with urllib.request.urlopen(url) as response:
-        data = json.load(response)
+    Returns:
+        dict[str, pd.DataFrame]: _description_
+    """
+    keys = keys or []
+    dfs, fails = {}, []
+
+    try:
+        headers = {"User-Agent": "Mozilla/5.0"}
+        request = urllib.request.Request(url_path, headers=headers)
+
+        with urllib.request.urlopen(request) as url:
+            data = json.load(url)
+            print(data)
+    except Exception as e:
+        print(f"{e} for {url_path}")
+        return [{"err": e, "path": url_path}]
 
     if isinstance(data, dict):
-        data_dfs = {}
+        for k, v in data.items():
+            if k in keys and isinstance(v, list):
+                try:
+                    dfs[k] = pd.DataFrame(v)
+                except Exception as e:
+                    print(f"{e} for {k}")
+                    fails.append({"err": e, "key": k})
 
-        for key in keys:
-            data_dfs[key] = pd.DataFrame(data[key])
+    if isinstance(data, list):
+        try:
+            dfs[url_path] = pd.DataFrame(data)
+        except Exception as e:
+            print(f"{e} for {k}")
+            fails.append({"err": e, "key": k})
 
-        return data_dfs
-
-    elif isinstance(data, list):
-        unpacked_data = [extract_stats(match) for match in data]
-        data_dfs = pd.DataFrame(unpacked_data)
-        stat_cols = [stat["identifier"] for stat in data[0]["stats"]]
-        for stat in stat_cols:
-            data_dfs.rename(
-                columns={stat: f"{stat}_a", f"{stat}_h": f"{stat}_h"}, inplace=True
-            )
-
-        data_dfs.drop(columns=["stats"])
-
-        return data_dfs
+    if fails:
+        return fails
+    return dfs
