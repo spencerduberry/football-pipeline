@@ -21,3 +21,8 @@ def response_dict():
 @pytest.fixture
 def response_list():
     return [{"col": 1}, {"col": 2}, {"col": 3}]
+
+
+@pytest.fixture
+def fake_url():
+    return "https://www.example.com/I_love@these$players#with%two-feet^&*(?!);:'\",<>/"

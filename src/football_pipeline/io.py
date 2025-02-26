@@ -1,9 +1,10 @@
 import json
-import re
 import urllib.request
 
 import pandas as pd
 import yaml
+
+from src.football_pipeline.utils import sanitize_url
 
 
 def read_yaml(path: str) -> dict:
@@ -47,11 +48,6 @@ def write_to_parquet(df: pd.DataFrame, path: str) -> bool:
     except Exception as e:
         print(f"{path} is not a valid path: {e}")
         return False
-
-
-def sanitize_url(url: str) -> str:
-    """Creates a short, valid dictionary key from a URL."""
-    return re.sub(r"https?://|www\.|[^a-zA-Z0-9]", "_", url).strip("_")
 
 
 def extract_data(url_path: str, keys: list = None) -> dict[str, pd.DataFrame]:
