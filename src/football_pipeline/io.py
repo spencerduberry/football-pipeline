@@ -70,7 +70,7 @@ def extract_data(url_path: str, keys: list = None) -> dict[str, pd.DataFrame]:
 
         with urllib.request.urlopen(request) as url:
             data = json.load(url)
-            print(data)
+
     except Exception as e:
         print(f"{e} for {url_path}")
         return [{"err": e, "path": url_path}]
