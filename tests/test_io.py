@@ -96,11 +96,6 @@ def test_extract_data(request, response_fixture_name, keys, expected_result):
         patch("urllib.request.urlopen", return_value=mock_response),
     ):
         result = extract_data("http://mock.path", keys)
-        if response_fixture_name == "response_dict":
-            assert {
-                k: result[k].to_dict(orient="records") for k in keys
-            } == expected_result
-        elif response_fixture_name == "response_list":
-            assert {
-                k: v.to_dict(orient="records") for k, v in result.items()
-            } == expected_result
+        assert {
+            k: v.to_dict(orient="records") for k, v in result.items()
+        } == expected_result
