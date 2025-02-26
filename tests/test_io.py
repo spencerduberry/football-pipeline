@@ -1,9 +1,11 @@
+import json
 import os
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.football_pipeline.io import read_yaml, write_to_parquet
+from src.football_pipeline.io import extract_data, read_yaml, write_to_parquet
 
 
 @pytest.mark.parametrize(
@@ -61,3 +63,44 @@ def test_write_to_parquet(request, df_fixture_name, path, expected_output):
     finally:
         if os.path.exists(path):
             os.remove(path)
+
+
+@pytest.mark.parametrize(
+    "response_fixture_name, keys, expected_result",
+    [
+        (
+            "response_dict",
+            ["key_a", "key_c"],
+            {
+                "key_a": [{"col": 1}, {"col": 2}, {"col": 3}],
+                "key_c": [{"col": 7}, {"col": 8}, {"col": 9}],
+            },
+        ),
+        (
+            "response_list",
+            None,
+            {"mock_path": [{"col": 1}, {"col": 2}, {"col": 3}]},
+        ),
+    ],
+)
+def test_extract_data(request, response_fixture_name, keys, expected_result):
+    response_json = request.getfixturevalue(response_fixture_name)
+
+    mock_response = MagicMock()
+    mock_response.read.return_value = json.dumps(response_json).encode("utf-8")
+    mock_response.__enter__.return_value = mock_response
+    mock_response.status = 200
+
+    with (
+        patch("urllib.request.Request"),
+        patch("urllib.request.urlopen", return_value=mock_response),
+    ):
+        result = extract_data("http://mock.path", keys)
+        if response_fixture_name == "response_dict":
+            assert {
+                k: result[k].to_dict(orient="records") for k in keys
+            } == expected_result
+        elif response_fixture_name == "response_list":
+            assert {
+                k: v.to_dict(orient="records") for k, v in result.items()
+            } == expected_result

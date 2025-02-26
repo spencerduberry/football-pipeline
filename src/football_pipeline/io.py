@@ -1,5 +1,5 @@
 import json
-import os
+import re
 import urllib.request
 
 import pandas as pd
@@ -49,6 +49,11 @@ def write_to_parquet(df: pd.DataFrame, path: str) -> bool:
         return False
 
 
+def sanitize_url(url: str) -> str:
+    """Creates a short, valid dictionary key from a URL."""
+    return re.sub(r"https?://|www\.|[^a-zA-Z0-9]", "_", url).strip("_")
+
+
 def extract_data(url_path: str, keys: list = None) -> dict[str, pd.DataFrame]:
     """
     Takes a URL, loads the contents into a JSON object, and returns a dict of DataFrames.
@@ -85,7 +90,8 @@ def extract_data(url_path: str, keys: list = None) -> dict[str, pd.DataFrame]:
 
     if isinstance(data, list):
         try:
-            dfs[url_path] = pd.DataFrame(data)
+            sanitized_key = sanitize_url(url_path)
+            dfs[sanitized_key] = pd.DataFrame(data)
         except Exception as e:
             print(f"{e} for {k}")
             fails.append({"err": e, "key": k})
