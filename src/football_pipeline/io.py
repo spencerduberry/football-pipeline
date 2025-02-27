@@ -1,5 +1,10 @@
+import json
+import urllib.request
+
 import pandas as pd
 import yaml
+
+from src.football_pipeline.utils import sanitize_url
 
 
 def read_yaml(path: str) -> dict:
@@ -43,3 +48,50 @@ def write_to_parquet(df: pd.DataFrame, path: str) -> bool:
     except Exception as e:
         print(f"{path} is not a valid path: {e}")
         return False
+
+
+def extract_data(url_path: str, keys: list = None) -> dict[str, pd.DataFrame]:
+    """
+    Takes a URL, loads the contents into a JSON object, and returns a dict of DataFrames.
+
+    Args:
+        url_path (str): _description_
+        keys (list, optional): _description_. Defaults to None.
+
+    Returns:
+        dict[str, pd.DataFrame]: _description_
+    """
+    keys = keys or []
+    dfs, fails = {}, []
+
+    try:
+        headers = {"User-Agent": "Mozilla/5.0"}
+        request = urllib.request.Request(url_path, headers=headers)
+
+        with urllib.request.urlopen(request) as url:
+            data = json.load(url)
+
+    except Exception as e:
+        print(f"{e} for {url_path}")
+        return [{"err": e, "path": url_path}]
+
+    if isinstance(data, dict):
+        for k, v in data.items():
+            if k in keys and isinstance(v, list):
+                try:
+                    dfs[k] = pd.DataFrame(v)
+                except Exception as e:
+                    print(f"{e} for {k}")
+                    fails.append({"err": e, "key": k})
+
+    if isinstance(data, list):
+        try:
+            sanitized_key = sanitize_url(url_path)
+            dfs[sanitized_key] = pd.DataFrame(data)
+        except Exception as e:
+            print(f"{e} for {k}")
+            fails.append({"err": e, "key": k})
+
+    if fails:
+        return fails
+    return dfs
