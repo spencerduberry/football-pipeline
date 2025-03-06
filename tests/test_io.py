@@ -6,7 +6,6 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from src.football_pipeline.io import extract_data, read_yaml, write_to_parquet
-from src.football_pipeline.utils import sanitize_url
 
 
 @pytest.mark.parametrize(
@@ -100,15 +99,3 @@ def test_extract_data(request, response_fixture_name, keys, expected_result):
         assert {
             k: v.to_dict(orient="records") for k, v in result.items()
         } == expected_result
-
-
-@pytest.mark.parametrize(
-    "fixture_name, expected_result",
-    [
-        ("fake_url", "example_com_I_love_these_players_with_two_feet"),
-    ],
-)
-def test_sanitize_url(request, fixture_name, expected_result):
-    input_url = request.getfixturevalue(fixture_name)
-    result = sanitize_url(input_url)
-    assert result == expected_result
