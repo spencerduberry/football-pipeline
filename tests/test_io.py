@@ -141,10 +141,10 @@ def test_extract_data_with_dataframe_exceptions(
         for idx, expected_dict in enumerate(expected_result):
             result_dict = result[idx]
             if not all(
-                [
+                (
                     result_dict.keys() == expected_dict.keys(),
                     result_dict["key"] == expected_dict["key"],
-                ]
+                )
             ):
                 mismatch.append((result_dict, expected_dict))
         assert mismatch == []
@@ -154,8 +154,8 @@ def test_extract_data_invalid_url():
     with patch("urllib.request.urlopen", side_effect=ValueError()):
         response = extract_data("invalid_url")
         assert all(
-            [
+            (
                 "err" in response[0].keys(),
                 "path" in response[0].keys(),
-            ]
+            )
         )
