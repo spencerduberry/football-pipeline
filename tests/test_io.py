@@ -99,3 +99,63 @@ def test_extract_data(request, response_fixture_name, keys, expected_result):
         assert {
             k: v.to_dict(orient="records") for k, v in result.items()
         } == expected_result
+
+
+@pytest.mark.parametrize(
+    "response_fixture_name, keys, expected_result",
+    [
+        (
+            "response_dict",
+            ["key_a", "key_c"],
+            [
+                {"err": Exception(), "key": "key_a"},
+                {"err": Exception(), "key": "key_c"},
+            ],
+        ),
+        (
+            "response_list",
+            None,
+            [
+                {"err": Exception(), "key": "mock_path"},
+            ],
+        ),
+    ],
+)
+def test_extract_data_with_dataframe_exceptions(
+    request, response_fixture_name, keys, expected_result
+):
+    response_json = request.getfixturevalue(response_fixture_name)
+
+    mock_response = MagicMock()
+    mock_response.read.return_value = json.dumps(response_json).encode("utf-8")
+    mock_response.__enter__.return_value = mock_response
+    mock_response.status = 200
+
+    with (
+        patch("urllib.request.Request"),
+        patch("urllib.request.urlopen", return_value=mock_response),
+        patch("src.football_pipeline.io.pd.DataFrame", side_effect=Exception()),
+    ):
+        result = extract_data("http://mock.path", keys)
+        mismatch = []
+        for idx, expected_dict in enumerate(expected_result):
+            result_dict = result[idx]
+            if not all(
+                (
+                    result_dict.keys() == expected_dict.keys(),
+                    result_dict["key"] == expected_dict["key"],
+                )
+            ):
+                mismatch.append((result_dict, expected_dict))
+        assert mismatch == []
+
+
+def test_extract_data_invalid_url():
+    with patch("urllib.request.urlopen", side_effect=ValueError()):
+        response = extract_data("invalid_url")
+        assert all(
+            (
+                "err" in response[0].keys(),
+                "path" in response[0].keys(),
+            )
+        )
