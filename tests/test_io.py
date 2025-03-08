@@ -116,7 +116,7 @@ def test_extract_data(request, response_fixture_name, keys, expected_result):
             "response_list",
             None,
             [
-                {"err": Exception(), "key": None},
+                {"err": Exception(), "key": "mock_path"},
             ],
         ),
     ],
@@ -137,15 +137,17 @@ def test_extract_data_with_dataframe_exceptions(
         patch("src.football_pipeline.io.pd.DataFrame", side_effect=Exception()),
     ):
         result = extract_data("http://mock.path", keys)
-        for idx in range(len(expected_result)):
+        mismatch = []
+        for idx, expected_dict in enumerate(expected_result):
             result_dict = result[idx]
-            expected_dict = expected_result[idx]
-            assert all(
+            if not all(
                 [
                     result_dict.keys() == expected_dict.keys(),
                     result_dict["key"] == expected_dict["key"],
                 ]
-            )
+            ):
+                mismatch.append((result_dict, expected_dict))
+        assert mismatch == []
 
 
 def test_extract_data_invalid_url():
