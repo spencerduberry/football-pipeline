@@ -89,8 +89,8 @@ def extract_data(url_path: str, keys: list = None) -> dict[str, pd.DataFrame]:
             sanitized_key = sanitize_url(url_path)
             dfs[sanitized_key] = pd.DataFrame(data)
         except Exception as e:
-            print(f"{e} for {k}")
-            fails.append({"err": e, "key": k})
+            print(e)
+            fails.append({"err": e, "key": None})
 
     if fails:
         return fails
