@@ -1,0 +1,5 @@
+league
+  backseries: False
+  players:
+    - some player
+    - some other player

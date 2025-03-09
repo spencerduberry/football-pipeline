@@ -1,0 +1,11 @@
+endpoints:
+  matches:
+    keys: []
+    path: https://fantasy.premierleague.com/api/fixtures/
+  statics:
+    keys:
+    - element_types
+    - elements
+    - teams
+    path: https://fantasy.premierleague.com/api/bootstrap-static/
+save_root: C:\Users\spenc\github\football-pipeline\data\00_raw
