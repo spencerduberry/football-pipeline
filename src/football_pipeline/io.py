@@ -4,7 +4,7 @@ import urllib.request
 import pandas as pd
 import yaml
 
-from src.football_pipeline.utils import sanitize_url
+from football_pipeline.utils import sanitize_url
 
 
 def read_yaml(path: str) -> dict:
