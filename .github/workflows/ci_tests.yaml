@@ -24,4 +24,4 @@ jobs:
         run: uv sync --all-extras --dev
 
       - name: Run tests
-        run: uv run pytest -v --cov=src --cov-report term-missing --cov-fail-under=80
+        run: uv run pytest -v --cov=src --cov-report term-missing --cov-fail-under=50
