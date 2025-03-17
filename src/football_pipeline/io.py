@@ -4,9 +4,11 @@ import urllib.request
 import pandas as pd
 import yaml
 
+from football_pipeline.logger import log_func
 from football_pipeline.utils import sanitize_url
 
 
+@log_func
 def read_yaml(path: str) -> dict:
     """
     Loads a YAML file from the given path and returns its contents as a dict.
@@ -32,6 +34,7 @@ def read_yaml(path: str) -> dict:
         return {}
 
 
+@log_func
 def write_to_parquet(df: pd.DataFrame, path: str) -> bool:
     """
     Takes a pandas dataframe, converts to parquet format and saves it in the specified path.
@@ -50,6 +53,7 @@ def write_to_parquet(df: pd.DataFrame, path: str) -> bool:
         return False
 
 
+@log_func
 def extract_data(url_path: str, keys: list = None) -> dict[str, pd.DataFrame]:
     """
     Takes a URL, loads the contents into a JSON object, and returns a dict of DataFrames.

@@ -30,5 +30,6 @@ def log_func(func: Callable) -> Callable:
                 "res": res,
             }
         )
+        return res
 
     return wrapper

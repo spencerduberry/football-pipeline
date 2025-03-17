@@ -5,7 +5,10 @@ from datetime import datetime
 
 import pandas as pd
 
+from football_pipeline.logger import log_func
 
+
+@log_func
 def add_ingestion_columns(
     df: pd.DataFrame, batch_guid: str, date_time: datetime
 ) -> pd.DataFrame:
