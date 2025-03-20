@@ -1,6 +1,7 @@
 import functools
 import logging
 import logging.config
+import os
 from collections.abc import Callable
 
 
@@ -37,6 +38,7 @@ def log_func(func: Callable) -> Callable:
     return wrapper
 
 
+os.makedirs("data/logs", exist_ok=True)
 LOGGING_CONFIG = {  # constant, meaning it should not be changed after definition
     "version": 1,  # future-proofing in case of modifications to the logger class
     "disable_existing_loggers": False,  # (root logger is bieng used)
@@ -57,6 +59,7 @@ LOGGING_CONFIG = {  # constant, meaning it should not be changed after definitio
             "encoding": "utf-8",
         }
     },
+    "filename": "data/logs/001_raw_layer.log",
     "root": {"level": "DEBUG", "handlers": ["raw_log"]},
 }
 
