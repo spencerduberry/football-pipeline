@@ -27,7 +27,7 @@ def run_raw_layer(config_path: str) -> dict:
         res = extract_data(path, keys)
 
         if isinstance(res, list):
-            logger.error("Error: retrieved onbject was a list.")
+            logger.error({"df": res, "err": "Retrieved object was a list."})
             raise ValueError(res)
 
         res = {

@@ -25,14 +25,17 @@ def read_yaml(path: str) -> dict:
 
         if data is None:
             logger.warning(
-                f"Warning: {path} is empty or invalid YAML. Returning empty dict."
+                {
+                    "path": {path},
+                    "msg": "Warning: path contains empty or invalid YAML. returning empty dict",
+                }
             )
             return {}
 
         return data
 
     except Exception as e:
-        logger.error(f"Error loading YAML from {path}: {e}")
+        logger.error({"path": path, "err": e, "msg": "Error loading YAML"})
         return {}
 
 
@@ -43,7 +46,10 @@ def write_to_parquet(df: pd.DataFrame, path: str) -> bool:
     """
     if not path.endswith(".parquet"):
         logger.error(
-            f"{path} is an invalid file name. Please specify a .parquet file extension"
+            {
+                "path": {path},
+                "msg": "Invalid file name. Please specify a .parquet file extension.",
+            }
         )
         return False
 
@@ -51,7 +57,7 @@ def write_to_parquet(df: pd.DataFrame, path: str) -> bool:
         df.to_parquet(path)
         return True
     except Exception as e:
-        logger.error(f"{path} is not a valid path: {e}")
+        logger.error({"path": path, "err": e, "msg": "Invalid path"})
         return False
 
 
@@ -78,7 +84,7 @@ def extract_data(url_path: str, keys: list = None) -> dict[str, pd.DataFrame]:
             data = json.load(url)
 
     except Exception as e:
-        logger.error(f"{e} for {url_path}")
+        logger.error({"err": e, "path": url_path})
         return [{"err": e, "path": url_path}]
 
     if isinstance(data, dict):
@@ -87,7 +93,7 @@ def extract_data(url_path: str, keys: list = None) -> dict[str, pd.DataFrame]:
                 try:
                     dfs[k] = pd.DataFrame(v)
                 except Exception as e:
-                    logger.error(f"{e} for {k}")
+                    logger.error({"err": e, "key": k})
                     fails.append({"err": e, "key": k})
 
     if isinstance(data, list):
@@ -95,7 +101,7 @@ def extract_data(url_path: str, keys: list = None) -> dict[str, pd.DataFrame]:
             sanitized_key = sanitize_url(url_path)
             dfs[sanitized_key] = pd.DataFrame(data)
         except Exception as e:
-            logger.error(e)
+            logger.error({"err": e, "key": sanitized_key})
             fails.append({"err": e, "key": sanitized_key})
 
     if fails:
