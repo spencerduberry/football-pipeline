@@ -38,7 +38,7 @@ def log_func(func: Callable) -> Callable:
     return wrapper
 
 
-os.makedirs("data/logs", exist_ok=True)
+os.makedirs("./data/logs", exist_ok=True)
 LOGGING_CONFIG = {  # constant, meaning it should not be changed after definition
     "version": 1,  # future-proofing in case of modifications to the logger class
     "disable_existing_loggers": False,  # (root logger is bieng used)
@@ -52,14 +52,13 @@ LOGGING_CONFIG = {  # constant, meaning it should not be changed after definitio
             "class": "logging.handlers.TimedRotatingFileHandler",  # deletes logs after a specified time frame
             "level": "DEBUG",
             "formatter": "default_formatter",
-            "filename": "001_raw_layer.log",
+            "filename": "./data/logs/001_raw_layer.log",
             "when": "midnight",  # rotate at midnight
             "interval": 1,  # once per day
             "backupCount": 7,  # keep a week's worth of logs
             "encoding": "utf-8",
         }
     },
-    "filename": "data/logs/001_raw_layer.log",
     "root": {"level": "DEBUG", "handlers": ["raw_log"]},
 }
 
