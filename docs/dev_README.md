@@ -20,7 +20,7 @@ Use a simple football api to get stats on matches and stuff
 
 ## Stage 2 (DA focused)
 - Basic data analysis on the tables that are created in the gold layer
-- mainly using SQL this can also include data-vis stuff 
+- mainly using SQL this can also include data-vis stuff
 
 ## Tools
 - `SQL` (obv)
@@ -90,7 +90,7 @@ def run_raw_layer_pipe(config_path: str) -> bool:
     # read the yaml config
     config = read_yaml(config_path)
 
-    # validate the config 
+    # validate the config
     # TODO
 
     # for each of the config settings:
@@ -109,7 +109,7 @@ def run_raw_layer_pipe(config_path: str) -> bool:
 
         # ensure that successfully saved
             # this could mean updating a log file/table with pipeline metadata
-        
-        # return result  
+
+        # return result
 
 ```

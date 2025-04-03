@@ -17,5 +17,5 @@ Fixes # (issue)
 - [ ] New and existing unit tests pass locally with my changes
 
 ## Reviewer checklist
-- [ ] All PR checks have passed 
+- [ ] All PR checks have passed
 - [ ] Test cases cover essential functionality for a range of inputs

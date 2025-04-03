@@ -4,9 +4,11 @@ import uuid
 from datetime import datetime
 
 from football_pipeline.io import extract_data, read_yaml, write_to_parquet
+from football_pipeline.logger import log_func, logger
 from football_pipeline.transform import add_ingestion_columns
 
 
+@log_func
 def run_raw_layer(config_path: str) -> dict:
     config = read_yaml(config_path)
 
@@ -25,6 +27,7 @@ def run_raw_layer(config_path: str) -> dict:
         res = extract_data(path, keys)
 
         if isinstance(res, list):
+            logger.error({"df": res, "err": "Retrieved object was a list."})
             raise ValueError(res)
 
         res = {
