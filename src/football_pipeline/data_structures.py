@@ -12,4 +12,33 @@ class TeamsTable:
     short_name: str = attrs.field(
         validator=[instance_of(str), matches_re("[A-Z]{3}")], converter=[str, str.upper]
     )
-    strength: int = attrs.field(validator=[instance_of(int)], converter=int)
+
+
+@attrs.define
+class Event:
+    event_id: int = attrs.field(validator=[instance_of(int), gt(0)], converter=int)
+    event: str = attrs.field(validator=[instance_of(str), min_len(2), max_len(100)])
+
+
+@attrs.define
+class PlayerMatchStats:
+    player_id: int = attrs.field(validator=[instance_of(int), gt(0)], converter=int)
+    fixture_id: int = attrs.field(validator=[instance_of(int), gt(0)], converter=int)
+    minutes_played: int = attrs.field(validator=[instance_of(int)], converter=int)
+    influence: float = attrs.field(validator=[instance_of(float)], converter=float)
+    creativity: float = attrs.field(validator=[instance_of(float)], converter=float)
+    threat: float = attrs.field(validator=[instance_of(float)], converter=float)
+    ict_index: float = attrs.field(validator=[instance_of(float)], converter=float)
+    starts: int = attrs.field(validator=[instance_of(int)], converter=int)
+    expeected_goals: float = attrs.field(
+        validator=[instance_of(float)], converter=float
+    )
+    expected_assists: float = attrs.field(
+        validator=[instance_of(float)], converter=float
+    )
+    expected_goal_involvements: float = attrs.field(
+        validator=[instance_of(float)], converter=float
+    )
+    expected_goals_conceded: float = attrs.field(
+        validator=[instance_of(float)], converter=float
+    )
