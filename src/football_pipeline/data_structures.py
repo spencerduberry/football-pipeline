@@ -24,21 +24,29 @@ class Event:
 class PlayerMatchStats:
     player_id: int = attrs.field(validator=[instance_of(int), gt(0)], converter=int)
     fixture_id: int = attrs.field(validator=[instance_of(int), gt(0)], converter=int)
-    minutes_played: int = attrs.field(validator=[instance_of(int)], converter=int)
-    influence: float = attrs.field(validator=[instance_of(float)], converter=float)
-    creativity: float = attrs.field(validator=[instance_of(float)], converter=float)
-    threat: float = attrs.field(validator=[instance_of(float)], converter=float)
-    ict_index: float = attrs.field(validator=[instance_of(float)], converter=float)
-    starts: int = attrs.field(validator=[instance_of(int)], converter=int)
+    minutes_played: int = attrs.field(
+        validator=[instance_of(int), gt(-1)], converter=int
+    )
+    influence: float = attrs.field(
+        validator=[instance_of(float), gt(-1)], converter=float
+    )
+    creativity: float = attrs.field(
+        validator=[instance_of(float), gt(-1)], converter=float
+    )
+    threat: float = attrs.field(validator=[instance_of(float), gt(-1)], converter=float)
+    ict_index: float = attrs.field(
+        validator=[instance_of(float), gt(-1)], converter=float
+    )
+    starts: int = attrs.field(validator=[instance_of(int), gt(-1)], converter=int)
     expeected_goals: float = attrs.field(
-        validator=[instance_of(float)], converter=float
+        validator=[instance_of(float), gt(-1)], converter=float
     )
     expected_assists: float = attrs.field(
-        validator=[instance_of(float)], converter=float
+        validator=[instance_of(float), gt(-1)], converter=float
     )
     expected_goal_involvements: float = attrs.field(
-        validator=[instance_of(float)], converter=float
+        validator=[instance_of(float), gt(-1)], converter=float
     )
     expected_goals_conceded: float = attrs.field(
-        validator=[instance_of(float)], converter=float
+        validator=[instance_of(float), gt(-1)], converter=float
     )
