@@ -3,7 +3,7 @@ from attrs.validators import gt, in_, instance_of, matches_re, max_len, min_len
 
 
 @attrs.define
-class TeamsTable:
+class BronzeTeams:
     team_id: int = attrs.field(validator=[instance_of(int), gt(0)], converter=int)
     name: str = attrs.field(validator=[instance_of(str), min_len(2), max_len(100)])
     position: int = attrs.field(
@@ -15,13 +15,13 @@ class TeamsTable:
 
 
 @attrs.define
-class Event:
+class BronzeEvent:
     event_id: int = attrs.field(validator=[instance_of(int), gt(0)], converter=int)
     event: str = attrs.field(validator=[instance_of(str), min_len(2), max_len(100)])
 
 
 @attrs.define
-class PlayerMatchStats:
+class BronzePlayerMatchStats:
     player_id: int = attrs.field(validator=[instance_of(int), gt(0)], converter=int)
     fixture_id: int = attrs.field(validator=[instance_of(int), gt(0)], converter=int)
     minutes_played: int = attrs.field(
