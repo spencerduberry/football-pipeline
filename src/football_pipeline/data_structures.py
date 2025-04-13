@@ -39,3 +39,29 @@ class BronzePlayer:
         converter=str.lower,
     )
     birth_date: date = attrs.field(validator=[instance_of(date)], converter=parse_date)
+
+
+@attrs.define
+class BronzeFixture:
+    fixture_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
+    started: bool = attrs.field(validator=instance_of(bool))
+    finished: bool = attrs.field(validator=instance_of(bool))
+    kickoff_time: date = attrs.field(
+        validator=[instance_of(date)], converter=parse_date
+    )
+    home_team_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
+    away_team_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
+    team_h_difficulty: int = attrs.field(
+        validator=[instance_of(int), ge(0)], converter=int
+    )
+    team_a_difficulty: int = attrs.field(
+        validator=[instance_of(int), ge(0)], converter=int
+    )
+
+
+@attrs.define
+class BronzeStats:
+    event_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
+    team_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
+    fixture_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
+    player_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
