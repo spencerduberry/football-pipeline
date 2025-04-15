@@ -7,13 +7,13 @@ from attrs.validators import ge, in_, instance_of, matches_re
 
 
 def parse_date(value):
-    value = value[:10]
     if isinstance(value, date):
         return value
+    value = value[:10]
     return datetime.strptime(value, "%Y-%m-%d").date()
 
 
-player_status = [
+PLAYER_STATUS = [
     "a",
     "d",
     "i",
@@ -29,13 +29,13 @@ class BronzePlayer:
         validator=[instance_of(int), in_(range(1, 5))], converter=int
     )
     first_name: str = attrs.field(
-        validator=[instance_of(str), matches_re(r"^[\D\s]+$")], converter=str.title
+        validator=[instance_of(str), matches_re(r"^[\D\s]+$")], converter=str.lower
     )
     second_name: str = attrs.field(
-        validator=[instance_of(str), matches_re(r"^[\D\s]+$")], converter=str.title
+        validator=[instance_of(str), matches_re(r"^[\D\s]+$")], converter=str.lower
     )
     status: str = attrs.field(
-        validator=[instance_of(str), in_(player_status)],
+        validator=[instance_of(str), in_(PLAYER_STATUS)],
         converter=str.lower,
     )
     birth_date: date = attrs.field(validator=[instance_of(date)], converter=parse_date)
