@@ -107,3 +107,46 @@ def extract_data(url_path: str, keys: list = None) -> dict[str, pd.DataFrame]:
     if fails:
         return fails
     return dfs
+
+
+@log_func
+def new_extract_data(url_path: str) -> dict | list | list[dict]:
+    try:
+        headers = {"User-Agent": "Mozilla/5.0"}
+        request = urllib.request.Request(url_path, headers=headers)
+
+        with urllib.request.urlopen(request) as url:
+            data = json.load(url)
+    except Exception as e:
+        logger.error({"err": e, "path": url_path})
+        return [{"err": e, "path": url_path}]
+
+    return data
+
+
+@log_func
+def convert_data_to_df(
+    data: dict | list, url_path: str, keys: list = None
+) -> dict[str, pd.DataFrame]:
+    keys = keys or []
+    dfs, fails = {}, []
+
+    if isinstance(data, dict):
+        for k, v in data.items():
+            if k in keys and isinstance(v, list):
+                try:
+                    dfs[k] = pd.DataFrame(v)
+                except Exception as e:
+                    logger.error({"err": e, "key": k})
+                    fails.append({"err": e, "key": k})
+
+    if isinstance(data, list):
+        try:
+            sanitized_key = sanitize_url(url_path)
+            dfs[sanitized_key] = pd.DataFrame(data)
+        except Exception as e:
+            fails.append({"err": e, "key": sanitized_key})
+
+    if fails:
+        return fails
+    return dfs
