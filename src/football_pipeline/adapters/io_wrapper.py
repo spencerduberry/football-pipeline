@@ -1,7 +1,7 @@
 import json
 import urllib.request
 from enum import Enum, auto
-from typing import Protocol
+from typing import Protocol, runtime_checkable
 
 import attrs
 import pandas as pd
@@ -14,6 +14,7 @@ class FileType(Enum):
     FOOTBALL_API = auto()
 
 
+@runtime_checkable
 class IOProtocol(Protocol):
     def setup(self) -> bool: ...
 
