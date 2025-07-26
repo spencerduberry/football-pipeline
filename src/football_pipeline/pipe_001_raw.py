@@ -55,5 +55,11 @@ if __name__ == "__main__":
         "--config-path", type=str, help="Path to the configuration file"
     )
     args = parser.parse_args()
-    repo = Repo(IOWrapper(), FSLocal(), RealLogger(__file__), time_now, new_guid)
+    repo = Repo(
+        io=IOWrapper(),
+        fs=FSLocal(),
+        logger=RealLogger(__file__),
+        time_func=time_now,
+        guid_func=new_guid,
+    )
     print(run_raw_layer(args.config_path, repo))
