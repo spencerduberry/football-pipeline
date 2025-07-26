@@ -2,11 +2,11 @@ import datetime
 import uuid
 
 
-def time_now(date_format: str = "%Y%m%d - %H%M%S") -> str:
+def time_now(date_format: str = "%Y%m%d_%H%M%S") -> str:
     return datetime.datetime.now(datetime.timezone.utc).strftime(date_format)
 
 
-def fake_time_now(date_format: str = "%Y%m%d - %H%M%S") -> str:
+def fake_time_now(date_format: str = "%Y%m%d_%H%M%S") -> str:
     return datetime.datetime(
         2025, 4, 25, 23, 23, 55, tzinfo=datetime.timezone.utc
     ).strftime(date_format)
