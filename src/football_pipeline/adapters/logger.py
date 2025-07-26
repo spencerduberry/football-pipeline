@@ -7,7 +7,7 @@ import attrs
 
 LOGGING_CONFIG = {  # constant, meaning it should not be changed after definition
     "version": 1,  # future-proofing in case of modifications to the logger class
-    "disable_existing_loggers": False,  # (root logger is bieng used)
+    "disable_existing_loggers": False,  # (root logger is being used)
     "formatters": {
         "default_formatter": {"format": "%(asctime)s :: %(levelname)-8s :: %(message)s"}
     },
