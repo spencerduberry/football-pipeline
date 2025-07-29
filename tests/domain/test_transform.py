@@ -1,6 +1,10 @@
-import pytest
+from string import punctuation
 
-from src.football_pipeline.transform import add_ingestion_columns
+import pytest
+from hypothesis import given
+from hypothesis import strategies as st
+
+from src.football_pipeline.domain.transform import add_ingestion_columns, sanitize_url
 
 
 @pytest.mark.parametrize(
@@ -41,3 +45,14 @@ def test_add_ingestion_columns(
     assert result[column].nunique() == expected_unique_values
     assert (result["batch_guid"] == batch_guid).all()
     assert (result["ingestion_datetime"] == date_time).all()
+
+
+@given(st.text())
+def test_sanitize_url(input_url):
+    result = sanitize_url(input_url)
+    invalid_substrings = [
+        "https://",
+        "http://",
+        "www.",
+    ] + [character for character in punctuation if character != "_"]
+    assert all([substring not in result for substring in invalid_substrings])
