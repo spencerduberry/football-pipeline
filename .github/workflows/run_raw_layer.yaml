@@ -30,7 +30,7 @@ jobs:
         run: |
           git status
           git pull origin main
-          uv run ./src/football_pipeline/pipe_001_raw.py --config-path ./configs/001_raw_layer.yaml
+          uv run ./src/football_pipeline/stages/pipe_001_raw.py --config-path ./configs/001_raw_layer.yaml
 
       - name: Checkout branch
         run: |
