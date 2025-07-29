@@ -53,8 +53,10 @@ class IOWrapper:
             case FileType.YAML:
                 with open(path, "w") as file:
                     yaml.safe_dump(data, file, **kwargs)
+                return True
             case FileType.PARQUET:
                 data.to_parquet(path, **kwargs)
+                return True
             case _:
                 raise ValueError(f"Given invalid file type {file_type} for path {path}")
 
