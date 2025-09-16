@@ -9,9 +9,9 @@ from football_pipeline.adapters.time import new_guid, time_now
 from football_pipeline.domain.transform import add_ingestion_columns, convert_data_to_df
 
 
-def run_raw_layer(config_path: str, repo: Repo) -> dict:
+def run_raw_layer(config_path: str, repo: Repo) -> dict[str, bool]:
     config = repo.io.read(config_path, FileType.YAML)
-
+    repo.logger.info({"msg": f"successfully read yaml from {config_path =}"})
     if not config:
         return {"valid_config": False}
 
@@ -24,6 +24,9 @@ def run_raw_layer(config_path: str, repo: Repo) -> dict:
         path = v.get("path", "")
         keys = v.get("keys", [])
         api_response = repo.io.read(path, FileType.FOOTBALL_API)
+        repo.logger.info(
+            {"msg": f"successfully received message from {path =} {keys =}"}
+        )
         res = convert_data_to_df(api_response, path, keys)
 
         if isinstance(res, list):

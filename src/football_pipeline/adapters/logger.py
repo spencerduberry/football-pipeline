@@ -37,6 +37,7 @@ class LoggerProtocol(Protocol):
 
 @attrs.define
 class FakeLogger:
+    file: str = attrs.field()
     log: list = attrs.field(default=attrs.Factory(list))
     configured: bool = attrs.field(default=False)
 

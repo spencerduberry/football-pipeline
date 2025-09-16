@@ -1,9 +1,9 @@
-from src.football_pipeline.adapters.fs_wrapper import FakeFSLocal
-from src.football_pipeline.adapters.io_wrapper import FakeIOWrapper, FileType
-from src.football_pipeline.adapters.logger import FakeLogger
-from src.football_pipeline.adapters.repo import Repo
-from src.football_pipeline.adapters.time import fake_new_guid, fake_time_now
-from src.football_pipeline.stages.pipe_001_raw import run_raw_layer
+from football_pipeline.adapters.fs_wrapper import FakeFSLocal
+from football_pipeline.adapters.io_wrapper import FakeIOWrapper, FileType
+from football_pipeline.adapters.logger import FakeLogger
+from football_pipeline.adapters.repo import Repo
+from football_pipeline.adapters.time import fake_new_guid, fake_time_now
+from football_pipeline.stages.pipe_001_raw import run_raw_layer
 
 
 def test_run_raw_layer():
@@ -39,31 +39,43 @@ def test_run_raw_layer():
                 },
             ],
             "https://fantasy.premierleague.com/api/bootstrap-static/": {
-                "chips": {
-                    "id": 1,
-                    "name": "wildcard",
-                },
-                "events": {
-                    "id": 1,
-                    "name": "Gameweek 1",
-                },
-                "phases": {
-                    "id": 1,
-                    "name": "Overall",
-                },
-                "teams": {
-                    "code": 3,
-                    "draw": 0,
-                },
-                "element_stats": {"label": "Minutes played", "name": "minutes"},
-                "element_types": {
-                    "id": 1,
-                    "plural_name": "Goalkeepers",
-                },
-                "elements": {
-                    "can_transact": True,
-                    "can_select": True,
-                },
+                "chips": [
+                    {
+                        "id": 1,
+                        "name": "wildcard",
+                    }
+                ],
+                "events": [
+                    {
+                        "id": 1,
+                        "name": "Gameweek 1",
+                    }
+                ],
+                "phases": [
+                    {
+                        "id": 1,
+                        "name": "Overall",
+                    }
+                ],
+                "teams": [
+                    {
+                        "code": 3,
+                        "draw": 0,
+                    }
+                ],
+                "element_stats": [{"label": "Minutes played", "name": "minutes"}],
+                "element_types": [
+                    {
+                        "id": 1,
+                        "plural_name": "Goalkeepers",
+                    }
+                ],
+                "elements": [
+                    {
+                        "can_transact": True,
+                        "can_select": True,
+                    }
+                ],
             },
         },
     }
