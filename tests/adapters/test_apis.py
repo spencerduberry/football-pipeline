@@ -2,9 +2,9 @@ import inspect
 
 import pytest
 
-from src.football_pipeline.adapters.fs_wrapper import FakeFSLocal, FSLocal
-from src.football_pipeline.adapters.io_wrapper import FakeIOWrapper, IOWrapper
-from src.football_pipeline.adapters.logger import FakeLogger, RealLogger
+from football_pipeline.adapters.fs_wrapper import FakeFSLocal, FSLocal
+from football_pipeline.adapters.io_wrapper import FakeIOWrapper, IOWrapper
+from football_pipeline.adapters.logger import FakeLogger, RealLogger
 
 
 def get_signatures(entity: object) -> dict[str, inspect.Signature]:
@@ -74,7 +74,7 @@ class FakeWrongSignature:
         ),
         pytest.param(
             RealLogger("test"),
-            FakeLogger(),
+            FakeLogger("test"),
             id="Ensuring all methods in the logger match.",
         ),
     ],

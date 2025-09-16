@@ -82,4 +82,6 @@ class FakeIOWrapper:
         self.log.append(
             {"func": "write", "path": path, "file_type": file_type, "kwargs": kwargs}
         )
+        if file_type not in self.db:
+            self.db[file_type] = {}
         self.db[file_type][path] = data

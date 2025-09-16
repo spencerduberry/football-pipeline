@@ -1,4 +1,4 @@
-from src.football_pipeline.adapters import time
+from football_pipeline.adapters import time
 
 
 def test_time_now():
