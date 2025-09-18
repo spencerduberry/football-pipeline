@@ -16,3 +16,6 @@ class Repo:
     )
     time_func: Callable = attrs.field(validator=attrs.validators.instance_of(Callable))
     guid_func: Callable = attrs.field(validator=attrs.validators.instance_of(Callable))
+
+    def __attrs_post_init__(self) -> None:
+        self.logger.setup()
