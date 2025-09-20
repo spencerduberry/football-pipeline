@@ -30,9 +30,9 @@ LOGGING_CONFIG = {  # constant, meaning it should not be changed after definitio
 @runtime_checkable
 class LoggerProtocol(Protocol):
     def setup(self) -> bool: ...
-    def debug(self, message: dict) -> None: ...
-    def info(self, message: dict) -> None: ...
-    def error(self, message: dict) -> None: ...
+    def debug(self, **kwargs: dict) -> None: ...
+    def info(self, **kwargs: dict) -> None: ...
+    def error(self, **kwargs: dict) -> None: ...
 
 
 @attrs.define
@@ -45,14 +45,14 @@ class FakeLogger:
         self.configured = True
         return True
 
-    def debug(self, message: dict) -> None:
-        self.log.append({"level": "debug", **message})
+    def debug(self, **kwargs: dict) -> None:
+        self.log.append({"level": "debug", **kwargs})
 
-    def info(self, message: dict) -> None:
-        self.log.append({"level": "info", **message})
+    def info(self, **kwargs: dict) -> None:
+        self.log.append({"level": "info", **kwargs})
 
-    def error(self, message: dict) -> None:
-        self.log.append({"level": "error", **message})
+    def error(self, **kwargs: dict) -> None:
+        self.log.append({"level": "error", **kwargs})
 
 
 @attrs.define
@@ -66,11 +66,11 @@ class RealLogger:
         self.log = logging.getLogger(self.file)
         return True
 
-    def debug(self, message: dict) -> None:
-        self.log.debug(message)
+    def debug(self, **kwargs: dict) -> None:
+        self.log.debug(kwargs)
 
-    def info(self, message: dict) -> None:
-        self.log.info(message)
+    def info(self, **kwargs: dict) -> None:
+        self.log.info(kwargs)
 
-    def error(self, message: dict) -> None:
-        self.log.error(message)
+    def error(self, **kwargs: dict) -> None:
+        self.log.error(kwargs)
