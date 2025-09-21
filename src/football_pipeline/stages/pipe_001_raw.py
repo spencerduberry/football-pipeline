@@ -11,7 +11,7 @@ from football_pipeline.domain.transform import add_ingestion_columns, convert_da
 
 def run_raw_layer(config_path: str, repo: Repo) -> dict[str, bool]:
     config = repo.io.read(config_path, FileType.YAML)
-    repo.logger.info(msg=f"successfully read yaml from {config_path =}")
+    repo.logger.info(msg="successfully read yaml.", config_path=config_path)
     if not config:
         return {"valid_config": False}
 
@@ -24,9 +24,7 @@ def run_raw_layer(config_path: str, repo: Repo) -> dict[str, bool]:
         path = v.get("path", "")
         keys = v.get("keys", [])
         api_response = repo.io.read(path, FileType.FOOTBALL_API)
-        repo.logger.info(
-            msg=f"successfully received message from {path =} {keys =}"
-        )
+        repo.logger.info(msg="successfully received message.", path=path, keys=keys)
         res = convert_data_to_df(api_response, path, keys)
 
         if isinstance(res, list):
