@@ -39,3 +39,7 @@ create_branch:
 	uv sync --all-packages; \
 	uv run pre-commit install; \
 	uv run pre-commit run --all-files; \
+
+
+delete_merged_branches:
+	git fetch --prune; git branch -vv | grep ": gone]" | awk '{print $1}' | xargs git branch -d
