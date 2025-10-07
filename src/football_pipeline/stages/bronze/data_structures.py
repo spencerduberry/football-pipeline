@@ -22,7 +22,18 @@ PLAYER_STATUS = [
 
 
 @attrs.define
-class BronzePlayer:
+class BronzeSchema:
+    @classmethod
+    def from_dict(cls, row: dict):
+        filtered = {field.name: row[field.name] for field in attrs.fields(cls)}
+        return cls(**filtered)
+
+    def to_dict(self) -> dict:
+        return attrs.asdict(self)
+
+
+@attrs.define
+class BronzePlayer(BronzeSchema):
     player_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
     team_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
     player_type: int = attrs.field(
@@ -42,7 +53,7 @@ class BronzePlayer:
 
 
 @attrs.define
-class BronzeFixture:
+class BronzeFixture(BronzeSchema):
     fixture_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
     started: bool = attrs.field(validator=instance_of(bool))
     finished: bool = attrs.field(validator=instance_of(bool))
@@ -60,15 +71,16 @@ class BronzeFixture:
 
 
 @attrs.define
-class BronzeStats:
+class BronzeStats(BronzeSchema):
     event_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
     team_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
     fixture_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
     player_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
 
 
-class BronzeTeams:
-    team_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
+@attrs.define
+class BronzeTeams(BronzeSchema):
+    id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
     name: str = attrs.field(validator=[instance_of(str), min_len(2), max_len(100)])
     position: int = attrs.field(
         validator=[instance_of(int), ge(1), lt(21)], converter=int
@@ -79,13 +91,13 @@ class BronzeTeams:
 
 
 @attrs.define
-class BronzeEvent:
+class BronzeEvent(BronzeSchema):
     event_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
     event: str = attrs.field(validator=[instance_of(str), min_len(2), max_len(100)])
 
 
 @attrs.define
-class BronzePlayerMatchStats:
+class BronzePlayerMatchStats(BronzeSchema):
     player_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
     fixture_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
     minutes_played: int = attrs.field(
