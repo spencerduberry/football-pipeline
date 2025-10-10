@@ -3,10 +3,21 @@
 from datetime import date, datetime
 
 import attrs
-from attrs.validators import ge, in_, instance_of, lt, matches_re, max_len, min_len
+from attrs.validators import (
+    ge,
+    in_,
+    instance_of,
+    lt,
+    matches_re,
+    max_len,
+    min_len,
+    optional,
+)
 
 
 def parse_date(value):
+    if value is None:
+        return None
     if isinstance(value, date):
         return value
     value = value[:10]
@@ -34,9 +45,9 @@ class BronzeSchema:
 
 @attrs.define
 class BronzePlayer(BronzeSchema):
-    player_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
-    team_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
-    player_type: int = attrs.field(
+    id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
+    team: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
+    element_type: int = attrs.field(
         validator=[instance_of(int), in_(range(1, 5))], converter=int
     )
     first_name: str = attrs.field(
@@ -49,19 +60,21 @@ class BronzePlayer(BronzeSchema):
         validator=[instance_of(str), in_(PLAYER_STATUS)],
         converter=str.lower,
     )
-    birth_date: date = attrs.field(validator=[instance_of(date)], converter=parse_date)
+    birth_date: date = attrs.field(
+        validator=[optional(instance_of(date))], converter=parse_date
+    )
 
 
 @attrs.define
 class BronzeFixture(BronzeSchema):
-    fixture_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
+    id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
     started: bool = attrs.field(validator=instance_of(bool))
     finished: bool = attrs.field(validator=instance_of(bool))
     kickoff_time: date = attrs.field(
         validator=[instance_of(date)], converter=parse_date
     )
-    home_team_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
-    away_team_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
+    team_h: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
+    team_a: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
     team_h_difficulty: int = attrs.field(
         validator=[instance_of(int), ge(0)], converter=int
     )
