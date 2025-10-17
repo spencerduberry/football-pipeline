@@ -51,23 +51,48 @@ def bronze_event_transform(config_path: str, table: BronzeSchema):
 
     output = pd.DataFrame.from_dict(events, orient="index")
     output = output.reset_index().rename(columns={"index": "ID"})
+    output = output.rename(columns={"ID": "Event_ID", 0: "Event"})
 
     return output
 
 
-"""def bronze_stats_transform(config_path: str, table: BronzeSchema):
+# draft: currently returns list of dicts: return type needs to be changed to df
+def bronze_stats_transform(config_path: str, table: BronzeSchema):
     io = IOWrapper()
     df = io.read(config_path, FileType.PARQUET)
     events = bronze_event_transform(config_path, table)
     bronze_stats = []
 
     for i, row in enumerate(df):
-        fixture_id = df.iloc[i]['id']
-        stats_list = df.iloc[i]['stats']
+        fixture_id = df.iloc[i]["id"]
+        stats_list = df.iloc[i]["stats"]
         for dict in stats_list:
-            first_key = list(df.keys())[0]
-            list_of_dicts = list(dict.keys())[first_key]
-            for player in list_of_dicts:
-                bronze_stats.append({"Event_ID": , "Team_ID": , "Fixture_ID": fixture_id, "Player_ID": player})
+            first_key = list(dict.keys())[0]
+            second_key = list(dict.keys())[1]
+            event_name = list(dict.values())[2]
+            event_id = events.loc[events["Event"] == event_name, "Event_ID"].iloc[0]
 
-    return"""
+            for player in dict[first_key]:
+                team_id = df.iloc[i]["team_a"]
+                player_id = list(player.values())[0]
+                bronze_stats.append(
+                    {
+                        "Event_ID": event_id,
+                        "Team_ID": team_id,
+                        "Fixture_ID": fixture_id,
+                        "Player_ID": player_id,
+                    }
+                )
+            for player in dict[second_key]:
+                team_id = df.iloc[i]["team_h"]
+                player_id = list(player.values())[0]
+                bronze_stats.append(
+                    {
+                        "Event_ID": event_id,
+                        "Team_ID": team_id,
+                        "Fixture_ID": fixture_id,
+                        "Player_ID": player_id,
+                    }
+                )
+
+    return bronze_stats
