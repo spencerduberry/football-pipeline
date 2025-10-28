@@ -56,7 +56,6 @@ def bronze_event_transform(config_path: str, table: BronzeSchema):
     return output
 
 
-# draft: currently returns list of dicts: return type needs to be changed to df
 def bronze_stats_transform(config_path: str, table: BronzeSchema):
     io = IOWrapper()
     df = io.read(config_path, FileType.PARQUET)
@@ -66,33 +65,29 @@ def bronze_stats_transform(config_path: str, table: BronzeSchema):
     for i, row in enumerate(df):
         fixture_id = df.iloc[i]["id"]
         stats_list = df.iloc[i]["stats"]
-        for dict in stats_list:
-            first_key = list(dict.keys())[0]
-            second_key = list(dict.keys())[1]
-            event_name = list(dict.values())[2]
+        for event in stats_list:
+            away_key = list(event.keys())[0]
+            home_key = list(event.keys())[1]
+            event_name = list(event.values())[2]
             event_id = events.loc[events["Event"] == event_name, "Event_ID"].iloc[0]
+            team_mapping = {
+                away_key: "team_a",
+                home_key: "team_h",
+            }
 
-            for player in dict[first_key]:
-                team_id = df.iloc[i]["team_a"]
-                player_id = list(player.values())[0]
-                bronze_stats.append(
-                    {
-                        "Event_ID": event_id,
-                        "Team_ID": team_id,
-                        "Fixture_ID": fixture_id,
-                        "Player_ID": player_id,
-                    }
-                )
-            for player in dict[second_key]:
-                team_id = df.iloc[i]["team_h"]
-                player_id = list(player.values())[0]
-                bronze_stats.append(
-                    {
-                        "Event_ID": event_id,
-                        "Team_ID": team_id,
-                        "Fixture_ID": fixture_id,
-                        "Player_ID": player_id,
-                    }
-                )
+            for stat_key, team_col in team_mapping.items():
+                for player in event[stat_key]:
+                    team_id = df.iloc[i][team_col]
+                    player_id = list(player.values())[0]
+                    bronze_stats.append(
+                        {
+                            "Event_ID": event_id,
+                            "Team_ID": team_id,
+                            "Fixture_ID": fixture_id,
+                            "Player_ID": player_id,
+                        }
+                    )
 
-    return bronze_stats
+    output = pd.DataFrame(bronze_stats)
+
+    return output
