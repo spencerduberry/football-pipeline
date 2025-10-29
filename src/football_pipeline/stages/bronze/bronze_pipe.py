@@ -36,58 +36,42 @@ def generic_bronze_transform(config_path: str, table: BronzeSchema):
     return output
 
 
-# outputs a dict of events (might be able to use for player player match stats)
-def bronze_event_transform(config_path: str, table: BronzeSchema):
-    io = IOWrapper()
-    df = io.read(config_path, FileType.PARQUET)
-    events = {}
-    stats_list = df.iloc[0]["stats"]
+def bronze_stats_event_transform(df: pd.DataFrame) -> pd.DataFrame:
+    raw_columns = df[["id", "team_h", "team_a", "stats"]]
+    exploded_columns = raw_columns.explode("stats").reset_index(drop=True)
+    serialised_columns = (
+        exploded_columns["stats"].apply(pd.Series).reset_index(drop=True)
+    )
+    concat_df = pd.concat([exploded_columns, serialised_columns], axis=1)
+    a_table = concat_df.explode("a")
+    h_table = concat_df.explode("h")
 
-    for i, event in enumerate(stats_list):
-        all_values = event.values()
-        last_value = list(all_values)[-1]
-        last_val_var = last_value
-        events[i + 1] = last_val_var
-
-    output = pd.DataFrame.from_dict(events, orient="index")
-    output = output.reset_index().rename(columns={"index": "ID"})
-    output = output.rename(columns={"ID": "Event_ID", 0: "Event"})
-
-    return output
-
-
-def bronze_stats_transform(config_path: str, table: BronzeSchema):
-    io = IOWrapper()
-    df = io.read(config_path, FileType.PARQUET)
-    events = bronze_event_transform(config_path, table)
-    bronze_stats = []
-
-    for i, row in enumerate(df):
-        fixture_id = df.iloc[i]["id"]
-        stats_list = df.iloc[i]["stats"]
-        for event in stats_list:
-            away_key = list(event.keys())[0]
-            home_key = list(event.keys())[1]
-            event_name = list(event.values())[2]
-            event_id = events.loc[events["Event"] == event_name, "Event_ID"].iloc[0]
-            team_mapping = {
-                away_key: "team_a",
-                home_key: "team_h",
+    def transform_stats_list(stats_df: pd.DataFrame, team_columns: list):
+        team, players = team_columns
+        stats = (
+            stats_df[["id", "identifier"] + team_columns]
+            .dropna()
+            .reset_index(drop=True)
+        )
+        unpacked_players = stats[players].apply(pd.Series).reset_index(drop=True)
+        output = pd.concat([stats, unpacked_players], axis=1)
+        output = output.drop(columns=players).rename(
+            columns={
+                "id": "fixture_id",
+                team: "team_id",
+                "identifier": "event_id",
+                "element": "player_id",
             }
+        )
 
-            for stat_key, team_col in team_mapping.items():
-                for player in event[stat_key]:
-                    team_id = df.iloc[i][team_col]
-                    player_id = list(player.values())[0]
-                    bronze_stats.append(
-                        {
-                            "Event_ID": event_id,
-                            "Team_ID": team_id,
-                            "Fixture_ID": fixture_id,
-                            "Player_ID": player_id,
-                        }
-                    )
+        return output
 
-    output = pd.DataFrame(bronze_stats)
+    final_a_table = transform_stats_list(a_table, ["team_a", "a"])
+    final_h_table = transform_stats_list(h_table, ["team_h", "h"])
+    output = pd.concat([final_a_table, final_h_table])
+    event_map = {
+        idx: name for idx, name in enumerate(sorted(output["event_id"].unique()))
+    }
+    event_table = pd.DataFrame(event_map.items(), columns=["event_index", "event_id"])
 
-    return output
+    return output, event_table
