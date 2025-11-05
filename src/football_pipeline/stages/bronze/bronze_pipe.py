@@ -1,14 +1,12 @@
 import pandas as pd
 
-from src.football_pipeline.adapters.io_wrapper import FileType, IOWrapper
 from src.football_pipeline.stages.bronze.data_structures import (
     BronzeSchema,
 )
 
 
 # works on player, teams, fixtures tables
-def generic_bronze_transform(io: IOWrapper, config_path: str, table: BronzeSchema):
-    df = io.read(config_path, FileType.PARQUET)
+def generic_bronze_transform(df: pd.DataFrame, table: BronzeSchema) -> pd.DataFrame:
     valid, invalid = [], []
     rows = df.to_dict("records")
 
@@ -20,9 +18,7 @@ def generic_bronze_transform(io: IOWrapper, config_path: str, table: BronzeSchem
         except ValueError as e:
             row["error"] = e.args
             invalid.append(row)
-    output = pd.DataFrame([row.to_dict() for row in valid])
-
-    return output
+    return pd.DataFrame([row.to_dict() for row in valid])
 
 
 def bronze_stats_event_transform(df: pd.DataFrame) -> pd.DataFrame:
