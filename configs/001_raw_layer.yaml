@@ -8,4 +8,12 @@ endpoints:
     - elements
     - teams
     path: https://fantasy.premierleague.com/api/bootstrap-static/
+  element_summary:
+    keys:
+    - history
+    - history_past
+    path: https://fantasy.premierleague.com/api/element-summary/{id}/
+player_id:
+  min: 1
+  max: 748
 save_root: "./data/00_raw"
