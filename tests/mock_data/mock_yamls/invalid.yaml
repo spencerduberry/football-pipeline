@@ -1,4 +1,4 @@
-league
+league:
   backseries: False
   players:
     - some player
