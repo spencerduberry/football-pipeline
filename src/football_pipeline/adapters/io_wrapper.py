@@ -1,6 +1,6 @@
 import json
 import urllib.request
-from enum import Enum, auto
+from enum import StrEnum, auto
 from typing import Protocol, runtime_checkable
 
 import attrs
@@ -8,7 +8,7 @@ import pandas as pd
 import yaml
 
 
-class FileType(Enum):
+class FileType(StrEnum):
     PARQUET = auto()
     YAML = auto()
     FOOTBALL_API = auto()
@@ -76,12 +76,12 @@ class FakeIOWrapper:
         self.log.append(
             {"func": "read", "path": path, "file_type": file_type, "kwargs": kwargs}
         )
-        return self.db[file_type][path]
+        return self.db[path]
 
     def write(self, path: str, data, file_type: FileType, **kwargs) -> bool:
         self.log.append(
             {"func": "write", "path": path, "file_type": file_type, "kwargs": kwargs}
         )
-        if file_type not in self.db:
-            self.db[file_type] = {}
-        self.db[file_type][path] = data
+        if not path.endswith(file_type.value):
+            raise IOError(f"path must end with file_type {path =} {file_type =}")
+        self.db[path] = data

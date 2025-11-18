@@ -54,7 +54,6 @@ class FakeFSLocal:
 
     def create_dir(self, path: str) -> bool:
         self.log.append({"func": "create_dir", "path": path})
-        self.db[path] = {}
         return True
 
     def move(self, old_path: str, new_path: str) -> bool:
