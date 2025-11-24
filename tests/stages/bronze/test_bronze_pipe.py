@@ -1,17 +1,32 @@
 import pytest
+
 from football_pipeline.stages.bronze.bronze_pipe import generic_bronze_transform
+from football_pipeline.stages.bronze.data_structures import BronzeTeams
+
 
 @pytest.mark.parametrize(
-    "fixture_name",
+    "inp_df_fixt_name, validator_cls, expected_result_fixt_name",
     [
         pytest.param(
-            "get_mock_df_002",
-            id="Ensure only valid rows returned",
-        )
-    ]
+            "team_input_df",
+            BronzeTeams,
+            "team_expected_result",
+            id="Ensure separates BronzeTeamFixture valid and invalid records",
+        ),
+    ],
 )
+def test_generic_bronze_transform(
+    request, inp_df_fixt_name, validator_cls, expected_result_fixt_name
+):
+    inp_df = request.getfixturevalue(inp_df_fixt_name)
+    expected_valid, expected_invalid = request.getfixturevalue(
+        expected_result_fixt_name
+    )
 
-def test_generic_bronze_transform(request, fixture_name, BronzeTeamsFixture):
-    inp_df = request.getfixturevalue(fixture_name)
-    result = generic_bronze_transform(inp_df, BronzeTeamsFixture)
-    assert len(result) == 2
+    validator_instance = validator_cls(
+        id=1, name="Valid Dummy", position=1, short_name="DMY"
+    )
+    actual_valid, actual_invalid = generic_bronze_transform(inp_df, validator_instance)
+
+    assert actual_valid.to_dict("records") == expected_valid.to_dict("records")
+    assert actual_invalid.to_dict("records") == expected_invalid.to_dict("records")

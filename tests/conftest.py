@@ -1,6 +1,6 @@
 import pandas as pd
 import pytest
-from football_pipeline.stages.bronze.data_structures import BronzeTeams
+
 
 @pytest.fixture
 def get_mock_df_001():
@@ -8,21 +8,6 @@ def get_mock_df_001():
         {"column1": [1, 2, 3, 4, 5, 6], "column2": ["A", "B", "C", "D", "E", "F"]}
     )
 
-@pytest.fixture
-def get_mock_df_002():
-    return pd.DataFrame(
-        {"id": [1, "mr_tickle", 3, 4, 5, 6], "name": ["b", "bob", "bob", "bob", "bob", "bob"], 
-         "position": [1, 2, 3, 69, 5, 6], "short_name": ["WNK", "WNK", "WANC", "WNK", "WNK", "WNK"]}
-    )
-
-@pytest.fixture
-def BronzeTeamsFixture(): 
-    return BronzeTeams(
-        id=1,
-        name="Liverpool FC",
-        position=5,
-        short_name="LIV" 
-    )
 
 @pytest.fixture
 def response_dict():
@@ -36,3 +21,43 @@ def response_dict():
 @pytest.fixture
 def response_list():
     return [{"col": 1}, {"col": 2}, {"col": 3}]
+
+
+@pytest.fixture
+def team_input_df():
+    return pd.DataFrame(
+        {
+            "id": [0, 1, 2, 3, 4, 5],
+            "name": ["Arsenal", "a", "Chelsea", "Liverpool", "Man Utd", "Newcastle"],
+            "position": [1, 2, 33, 4, 5, 6],
+            "short_name": ["ARS", "AVL", "CHE", "LIVE", "MNU", "NEW"],
+        }
+    )
+
+
+@pytest.fixture
+def team_expected_result():
+    return (
+        pd.DataFrame(
+            {
+                "id": [4, 5],
+                "name": ["Man Utd", "Newcastle"],
+                "position": [5, 6],
+                "short_name": ["MNU", "NEW"],
+            }
+        ),
+        pd.DataFrame(
+            {
+                "id": [0, 1, 2, 3],
+                "name": ["Arsenal", "a", "Chelsea", "Liverpool"],
+                "position": [1, 2, 33, 4],
+                "short_name": ["ARS", "AVL", "CHE", "LIVE"],
+                "error": [
+                    ("'id' must be >= 1: 0",),
+                    ("Length of 'name' must be >= 2: 1",),
+                    ("'position' must be < 21: 33",),
+                    ("'short_name' must match regex '[A-Z]{3}' ('LIVE' doesn't)",),
+                ],
+            }
+        ),
+    )
