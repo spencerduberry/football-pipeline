@@ -4,7 +4,7 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
-from football_pipeline.domain.transform import add_ingestion_columns, sanitize_url
+from football_pipeline.stages.raw.transform import add_ingestion_columns, sanitize_url
 
 
 @pytest.mark.parametrize(

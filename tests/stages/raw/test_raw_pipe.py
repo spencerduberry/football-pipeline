@@ -3,7 +3,7 @@ from football_pipeline.adapters.io_wrapper import FakeIOWrapper, FileType
 from football_pipeline.adapters.logger import FakeLogger
 from football_pipeline.adapters.repo import Repo
 from football_pipeline.adapters.time import fake_new_guid, fake_time_now
-from football_pipeline.stages.pipe_001_raw import run_raw_layer
+from football_pipeline.stages.raw.raw_pipe import run_raw_layer
 
 
 def test_run_raw_layer():

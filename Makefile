@@ -5,7 +5,7 @@ run_tests:
 	uv run pytest -vv --cov=src --cov-report term-missing --cov-fail-under=50
 
 run_raw_layer:
-	uv run ./src/football_pipeline/stages/pipe_001_raw.py --config-path ./configs/001_raw_layer.yaml
+	uv run ./src/football_pipeline/stages/raw/raw_pipe.py --config-path ./configs/001_raw_layer.yaml
 
 create_branch:
 	@DEV_BRANCH=dev; \
