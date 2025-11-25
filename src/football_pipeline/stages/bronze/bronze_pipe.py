@@ -16,7 +16,7 @@ def generic_bronze_transform(df: pd.DataFrame, table: BronzeSchema) -> pd.DataFr
             valid.append(valid_row)
 
         except ValueError as e:
-            row["error"] = (e.args[0],)
+            row["error"] = e.args[0]
             invalid.append(row)
     return pd.DataFrame([row.to_dict() for row in valid]), pd.DataFrame(invalid)
 
