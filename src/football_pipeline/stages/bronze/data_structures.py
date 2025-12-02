@@ -89,6 +89,7 @@ class BronzeStats(BronzeSchema):
     team_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
     fixture_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
     player_id: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
+    value: int = attrs.field(validator=[instance_of(int), ge(1)], converter=int)
 
 
 @attrs.define

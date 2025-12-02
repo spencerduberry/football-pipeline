@@ -1,8 +1,8 @@
 import pandas as pd
 import pytest
 
-from football_pipeline.stages.bronze.bronze_pipe import generic_bronze_transform
 from football_pipeline.stages.bronze.data_structures import BronzeTeams
+from football_pipeline.stages.bronze.table_validators import generic_bronze_validation
 
 TEAM_INPUT_DF = pd.DataFrame(
     [
@@ -68,10 +68,10 @@ TEAM_EXPECTED_RESULT = (
         ),
     ],
 )
-def test_generic_bronze_transform(inp_df, validator_cls, expected_result):
+def test_generic_bronze_validation(inp_df, validator_cls, expected_result):
     expected_valid, expected_invalid = expected_result
 
-    actual_valid, actual_invalid = generic_bronze_transform(inp_df, validator_cls)
+    actual_valid, actual_invalid = generic_bronze_validation(inp_df, validator_cls)
 
     assert actual_valid.to_dict("records") == expected_valid.to_dict("records")
     assert actual_invalid.to_dict("records") == expected_invalid.to_dict("records")
