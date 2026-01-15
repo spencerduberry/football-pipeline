@@ -186,3 +186,7 @@ cython_debug/
 .DS_Store
 scratch.ipynb
 .python-version
+
+target/
+dbt_packages/
+logs/dbt.log
