@@ -33,3 +33,8 @@ repos:
         language: python
         pass_filenames: false
         always_run: true
+  - repo: https://github.com/tconbeer/sqlfmt
+    rev: v0.29.0
+    hooks:
+      - id: sqlfmt
+        language_version: python
