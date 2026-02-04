@@ -3,7 +3,6 @@ import datetime
 import pandas as pd
 import pytest
 
-from football_pipeline.stages.bronze.bronze_pipe import generic_bronze_transform
 from football_pipeline.stages.bronze.data_structures import (
     BronzeEvent,
     BronzeFixture,
@@ -11,6 +10,7 @@ from football_pipeline.stages.bronze.data_structures import (
     BronzeStats,
     BronzeTeams,
 )
+from football_pipeline.stages.bronze.table_validators import generic_bronze_validation
 
 TEAM_INPUT_DF = pd.DataFrame(
     [
@@ -229,18 +229,8 @@ EVENT_EXPECTED_RESULT = (
 
 STATS_INPUT_DF = pd.DataFrame(
     [
-        {
-            "event_id": 0,
-            "team_id": 1,
-            "fixture_id": 2,
-            "player_id": 3,
-        },
-        {
-            "event_id": 1,
-            "team_id": 2,
-            "fixture_id": 3,
-            "player_id": 4,
-        },
+        {"event_id": 0, "team_id": 1, "fixture_id": 2, "player_id": 3, "value": 0},
+        {"event_id": 1, "team_id": 2, "fixture_id": 3, "player_id": 4, "value": 1},
     ]
 )
 
@@ -248,12 +238,7 @@ STATS_INPUT_DF = pd.DataFrame(
 STATS_EXPECTED_RESULT = (
     pd.DataFrame(
         [
-            {
-                "event_id": 1,
-                "team_id": 2,
-                "fixture_id": 3,
-                "player_id": 4,
-            },
+            {"event_id": 1, "team_id": 2, "fixture_id": 3, "player_id": 4, "value": 1},
         ]
     ),
     pd.DataFrame(
@@ -263,6 +248,7 @@ STATS_EXPECTED_RESULT = (
                 "team_id": 1,
                 "fixture_id": 2,
                 "player_id": 3,
+                "value": 0,
                 "error": "'event_id' must be >= 1: 0",
             },
         ]
@@ -426,10 +412,10 @@ FIXTURE_EXPECTED_RESULT = (
         ),
     ],
 )
-def test_generic_bronze_transform(inp_df, validator_cls, expected_result):
+def test_generic_bronze_validation(inp_df, validator_cls, expected_result):
     expected_valid, expected_invalid = expected_result
 
-    actual_valid, actual_invalid = generic_bronze_transform(inp_df, validator_cls)
+    actual_valid, actual_invalid = generic_bronze_validation(inp_df, validator_cls)
 
     assert actual_valid.to_dict("records") == expected_valid.to_dict("records")
     assert actual_invalid.to_dict("records") == expected_invalid.to_dict("records")

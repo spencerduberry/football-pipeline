@@ -26,6 +26,7 @@ def run_raw_layer(config_path: str, repo: Repo) -> dict[str, bool]:
     for k, v in config.get("endpoints", {}).items():
         path = v.get("path", "")
         keys = v.get("keys", [])
+        repo.logger.info(msg="attempting to read", path=path, keys=keys)
         api_response = repo.io.read(path, FileType.FOOTBALL_API)
         repo.logger.info(msg="successfully received message.", path=path, keys=keys)
         res = convert_data_to_df(api_response, path, keys)
