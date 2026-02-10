@@ -25,6 +25,11 @@ repos:
       - id: end-of-file-fixer
       - id: check-toml
       - id: check-yaml
+  - repo: https://github.com/tconbeer/sqlfmt
+    rev: v0.29.0
+    hooks:
+      - id: sqlfmt
+        language_version: python
   - repo: local
     hooks:
       - id: pytest
