@@ -5,6 +5,7 @@ from copy import deepcopy
 from typing import Protocol, runtime_checkable
 
 import attrs
+import pandas as pd
 
 
 @runtime_checkable
@@ -49,7 +50,7 @@ class FSLocal:
 
 @attrs.define
 class FakeFSLocal:
-    db: dict = attrs.field(default=attrs.Factory(dict))
+    db: dict[str, pd.DataFrame] = attrs.field(default=attrs.Factory(dict))
     log: list = attrs.field(default=attrs.Factory(list))
 
     def create_dir(self, path: str) -> bool:
@@ -74,4 +75,4 @@ class FakeFSLocal:
 
     def list_files(self, path: str, recursive: bool = False) -> list[str]:
         self.log.append({"func": "list_files", "path": path, "recursive": recursive})
-        return list(self.db[path].keys())
+        return [p for p in self.db if p.startswith(path)]

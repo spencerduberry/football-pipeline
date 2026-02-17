@@ -57,4 +57,3 @@ def run_bronze_pipe(config_path: str, repo: Repo) -> dict[str, bool]:
         repo.io.write(valid_save_path, valid, FileType.PARQUET)
         invalid_save_path = f"{config['save_root']}/invalid/{k}/{date_time}.parquet"
         repo.io.write(invalid_save_path, invalid, FileType.PARQUET)
-        pass
