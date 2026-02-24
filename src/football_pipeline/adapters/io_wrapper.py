@@ -1,6 +1,7 @@
 import json
 import urllib.request
 from enum import Enum, auto
+from pathlib import Path
 from typing import Protocol, runtime_checkable
 
 import attrs
@@ -49,6 +50,7 @@ class IOWrapper:
                 raise ValueError(f"Given invalid file type {file_type} for path {path}")
 
     def write(self, path: str, data, file_type: FileType, **kwargs) -> bool:
+        Path(path).parent.mkdir(parents=True, exist_ok=True)
         match file_type:
             case FileType.YAML:
                 with open(path, "w") as file:

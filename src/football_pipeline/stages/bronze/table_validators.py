@@ -1,6 +1,6 @@
 import pandas as pd
 
-from src.football_pipeline.stages.bronze.data_structures import (
+from football_pipeline.stages.bronze.data_structures import (
     BronzeSchema,
 )
 
@@ -64,4 +64,6 @@ def bronze_stats_event_transform(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.Dat
         dict(event_table[["event_id", "event_index"]].values)
     )
 
-    return stats_table, event_table
+    return stats_table, event_table.rename(
+        columns={"event_index": "event_id", "event_id": "event"}
+    )
