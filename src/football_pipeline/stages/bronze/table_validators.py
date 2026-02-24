@@ -1,6 +1,6 @@
 import pandas as pd
 
-from src.football_pipeline.stages.bronze.data_structures import (
+from football_pipeline.stages.bronze.data_structures import (
     BronzeSchema,
 )
 

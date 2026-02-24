@@ -1,7 +1,12 @@
+import argparse
+
 import pandas as pd
 
-from football_pipeline.adapters.io_wrapper import FileType
+from football_pipeline.adapters.fs_wrapper import FSLocal
+from football_pipeline.adapters.io_wrapper import FileType, IOWrapper
+from football_pipeline.adapters.logger import RealLogger
 from football_pipeline.adapters.repo import Repo
+from football_pipeline.adapters.time import new_guid, time_now
 from football_pipeline.stages.bronze.data_structures import (
     BronzeEvent,
     BronzeFixture,
@@ -57,3 +62,19 @@ def run_bronze_pipe(config_path: str, repo: Repo) -> dict[str, bool]:
         repo.io.write(valid_save_path, valid, FileType.PARQUET)
         invalid_save_path = f"{config['save_root']}/invalid/{k}/{date_time}.parquet"
         repo.io.write(invalid_save_path, invalid, FileType.PARQUET)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Parse config path")
+    parser.add_argument(
+        "--config-path", type=str, help="Path to the configuration file"
+    )
+    args = parser.parse_args()
+    repo = Repo(
+        io=IOWrapper(),
+        fs=FSLocal(),
+        logger=RealLogger(__file__),
+        time_func=time_now,
+        guid_func=new_guid,
+    )
+    print(run_bronze_pipe(args.config_path, repo))
