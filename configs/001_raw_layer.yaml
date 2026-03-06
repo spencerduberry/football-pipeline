@@ -13,4 +13,4 @@ endpoints:
   #   - history
   #   - history_past
   #   path: https://fantasy.premierleague.com/api/element-summary/{id}/
-save_root: "./data/00_raw"
+save_root: "./data/000_raw"

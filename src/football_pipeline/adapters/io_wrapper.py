@@ -1,17 +1,17 @@
 import json
 import urllib.request
 from enum import Enum, auto
+from pathlib import Path
 from typing import Protocol, runtime_checkable
 
 import attrs
-import pandas as pd
 import yaml
 
 
 class FileType(Enum):
-    PARQUET = auto()
     YAML = auto()
     FOOTBALL_API = auto()
+    JSON = auto()
 
 
 @runtime_checkable
@@ -36,10 +36,7 @@ class IOWrapper:
     def read(self, path: str, file_type: FileType, **kwargs):
         match file_type:
             case FileType.YAML:
-                with open(path, "r") as file:
-                    return yaml.safe_load(file, **kwargs)
-            case FileType.PARQUET:
-                return pd.read_parquet(path, **kwargs)
+                return yaml.safe_load(Path(path).read_text(), **kwargs)
             case FileType.FOOTBALL_API:
                 headers = {"User-Agent": "Mozilla/5.0"}
                 request = urllib.request.Request(path, headers=headers, **kwargs)
@@ -49,13 +46,15 @@ class IOWrapper:
                 raise ValueError(f"Given invalid file type {file_type} for path {path}")
 
     def write(self, path: str, data, file_type: FileType, **kwargs) -> bool:
+        save_path = Path(path)
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+
         match file_type:
             case FileType.YAML:
-                with open(path, "w") as file:
-                    yaml.safe_dump(data, file, **kwargs)
+                save_path.write_text(yaml.safe_dump(data, **kwargs))
                 return True
-            case FileType.PARQUET:
-                data.to_parquet(path, **kwargs)
+            case FileType.JSON:
+                save_path.write_text(json.dumps(data, **kwargs))
                 return True
             case _:
                 raise ValueError(f"Given invalid file type {file_type} for path {path}")
@@ -76,12 +75,10 @@ class FakeIOWrapper:
         self.log.append(
             {"func": "read", "path": path, "file_type": file_type, "kwargs": kwargs}
         )
-        return self.db[file_type][path]
+        return self.db[path]
 
     def write(self, path: str, data, file_type: FileType, **kwargs) -> bool:
         self.log.append(
             {"func": "write", "path": path, "file_type": file_type, "kwargs": kwargs}
         )
-        if file_type not in self.db:
-            self.db[file_type] = {}
-        self.db[file_type][path] = data
+        self.db[path] = data
