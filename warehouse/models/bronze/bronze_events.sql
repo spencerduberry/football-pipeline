@@ -1,6 +1,6 @@
 {{ config (materialized="incremental") }}
 
-select hash(lower(trim(cast(event as text)))) as id, event
+select distinct hash(lower(trim(cast(event as text)))) as id, event
 
 from
     (
