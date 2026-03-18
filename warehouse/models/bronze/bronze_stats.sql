@@ -32,12 +32,18 @@ with
             a_stats.element as player_id,
             a_stats.value as value
         from exploded_stats_arrays
+    ),
+
+    all_stats as (
+        select *
+        from away_stats
+
+        union all
+
+        select *
+        from home_stats
     )
 
 select *
-from away_stats
-
-union all
-
-select *
-from home_stats
+from all_stats
+where player_id is not null and value is not null
