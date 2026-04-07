@@ -2,10 +2,13 @@
 
 with
     unnested as (
-        select unnest(element_types) as element_nested, ingest_datetime from {{ ref("bronze_statics") }}
+        select 
+            unnest(element_types) as element_nested, 
+            ingest_datetime 
+        from {{ ref("bronze_statics") }}
     ),
 
-    full as (
+    all_data as (
         select
             element_nested.id as id,
             element_nested.plural_name as plural_name,
@@ -20,11 +23,19 @@ with
             element_nested.ui_shirt_specific as ui_shirt_specific,
             element_nested.sub_positions_locked as sub_positions_locked,
             element_nested.element_count as element_count,
-            ingest_datetime
+            ingest_datetime,
+            row_number() over (partition by id order by ingest_datetime desc) as rn
         from unnested
+    ),
+
+    dedup as (
+        select
+            *
+        from all_data
+        where rn = 1
     )
 
-SELECT * FROM full
+select * from dedup
 
 
 
