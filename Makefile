@@ -7,6 +7,9 @@ run_tests:
 run_raw_layer:
 	uv run ./src/football_pipeline/stages/raw/raw_pipe.py --config-path ./configs/001_raw_layer.yaml
 
+run_all_dbt:
+	uv run dbt clean ; uv run dbt deps ; uv run dbt run ; uv run dbt test
+
 create_branch:
 	@DEV_BRANCH=dev; \
 	echo "Using develop branch \`$$DEV_BRANCH\`."; \
