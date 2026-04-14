@@ -2,7 +2,8 @@
 
 with
     unnested_stats_temp as (
-        select *, unnest(stats) as unnested_stats, filename from {{ ref("bronze_fixtures") }}
+        select *, unnest(stats) as unnested_stats, filename
+        from {{ ref("bronze_fixtures") }}
     ),
 
     exploded_stats_arrays as (

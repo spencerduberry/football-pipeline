@@ -2,10 +2,7 @@
 
 with
     unnested as (
-        select 
-            unnest(element_types) as element_nested, 
-            ingest_datetime,
-            filename
+        select unnest(element_types) as element_nested, ingest_datetime, filename
         from {{ ref("bronze_statics") }}
     ),
 
@@ -30,14 +27,7 @@ with
         from unnested
     ),
 
-    dedup as (
-        select
-            *
-        from all_data
-        where rn = 1
-    )
+    dedup as (select * from all_data where rn = 1)
 
-select * from dedup
-
-
-
+select *
+from dedup
