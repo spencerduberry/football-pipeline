@@ -1,4 +1,4 @@
-{{ config (materialized="incremental") }}
+{{ config (materialized="incremental", unique_key="id") }}
 
 select distinct hash(lower(trim(cast(event as text)))) as id, event
 

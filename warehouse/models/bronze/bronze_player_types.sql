@@ -4,7 +4,8 @@ with
     unnested as (
         select 
             unnest(element_types) as element_nested, 
-            ingest_datetime 
+            ingest_datetime,
+            filename
         from {{ ref("bronze_statics") }}
     ),
 
@@ -24,7 +25,8 @@ with
             element_nested.sub_positions_locked as sub_positions_locked,
             element_nested.element_count as element_count,
             ingest_datetime,
-            row_number() over (partition by id order by ingest_datetime desc) as rn
+            row_number() over (partition by id order by ingest_datetime desc) as rn,
+            filename
         from unnested
     ),
 
