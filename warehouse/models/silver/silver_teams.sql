@@ -1,11 +1,4 @@
-{{ config(materialized="incremental") }}
+{{ config(materialized="incremental", unique_key="id") }}
 
-with
-    unnested_teams as (
-        select unnest(teams) as teams, filename from {{ ref("bronze_statics") }}
-    ),
-
-    exploded_again as (select teams.*, filename from unnested_teams)
-
-select *
-from exploded_again
+select code, id, name, short_name, filename
+from {{ ref("silver_base_teams") }}
