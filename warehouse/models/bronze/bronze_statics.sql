@@ -2,7 +2,7 @@
 
 with
     staged as (
-        select *, {{ dbt.current_timestamp() }} as ingest_datetime
+        select *
         from
             read_json(
                 "./data/000_raw/statics/*.json", filename = true, union_by_name = true
