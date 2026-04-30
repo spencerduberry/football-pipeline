@@ -1,0 +1,37 @@
+version: 2
+models:
+- name: silver_base_teams
+  tests:
+  - has_expected_columns:
+      arguments:
+        column_names:
+        - filename
+        - ingest_datetime
+- name: silver_fixtures
+  tests:
+  - has_expected_columns:
+      arguments:
+        column_names:
+        - filename
+        - ingest_datetime
+- name: silver_stats
+  tests:
+  - has_expected_columns:
+      arguments:
+        column_names:
+        - filename
+        - ingest_datetime
+- name: silver_teams_metrics
+  tests:
+  - has_expected_columns:
+      arguments:
+        column_names:
+        - filename
+        - ingest_datetime
+- name: silver_teams
+  tests:
+  - has_expected_columns:
+      arguments:
+        column_names:
+        - filename
+        - ingest_datetime

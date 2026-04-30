@@ -2,7 +2,7 @@
 
 with
     unnested_stats_temp as (
-        select *, unnest(stats) as unnested_stats, filename
+        select *, unnest(stats) as unnested_stats, filename, ingest_datetime
         from {{ ref("bronze_fixtures") }}
     ),
 
@@ -12,7 +12,8 @@ with
             unnested_stats.identifier,
             unnest(unnested_stats.a) as a_stats,
             unnest(unnested_stats.h) as h_stats,
-            filename
+            filename,
+            ingest_datetime
         from unnested_stats_temp
     ),
 
@@ -23,7 +24,8 @@ with
             team_h as team_id,
             h_stats.element as player_id,
             h_stats.value as value,
-            filename
+            filename,
+            ingest_datetime
         from exploded_stats_arrays
     ),
 
@@ -34,7 +36,8 @@ with
             team_a as team_id,
             a_stats.element as player_id,
             a_stats.value as value,
-            filename
+            filename,
+            ingest_datetime
         from exploded_stats_arrays
     ),
 

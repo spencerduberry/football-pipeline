@@ -20,5 +20,6 @@ select
     strength_defence_away,
     pulse_id,
     filename,
+    ingest_datetime,
     {{ dbt.current_timestamp() }} as version_datetime
 from {{ ref("silver_base_teams") }}
