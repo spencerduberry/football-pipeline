@@ -14,7 +14,7 @@ def run_raw_layer(config_path: str, repo: Repo) -> dict[str, bool]:
         return {"valid_config": False}
 
     save_path = config.get("save_root", "./")
-    date_time_str = repo.time_func()
+    date_time_str = repo.time_func().strftime("%Y%m%d_%H%M%S")
     successes = {}
 
     for k, v in config.get("endpoints", {}).items():
@@ -23,7 +23,13 @@ def run_raw_layer(config_path: str, repo: Repo) -> dict[str, bool]:
         repo.logger.info(msg="attempting to read", path=path, keys=keys)
         api_response = repo.io.read(path, FileType.FOOTBALL_API)
         repo.logger.info(msg="successfully received message.", path=path, keys=keys)
-
+        if isinstance(api_response, dict):
+            api_response["ingest_datetime"] = str(repo.time_func())
+        elif isinstance(api_response, list):
+            for rec in api_response:
+                rec["ingest_datetime"] = str(repo.time_func())
+        else:
+            raise TypeError(f"Invalid API response type: {type(api_response)}")
         file_save_path = f"{save_path}/{k}/{date_time_str}.json"
         successes[file_save_path] = repo.io.write(
             file_save_path, api_response, FileType.JSON

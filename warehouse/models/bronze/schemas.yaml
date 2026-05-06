@@ -14,6 +14,12 @@ models:
     - not_null
 
 - name: bronze_stats
+  tests:
+  - has_expected_columns:
+      arguments:
+        column_names:
+        - filename
+        - ingest_datetime
   columns:
   - name: fixture_id
     data_type: int
@@ -57,3 +63,10 @@ models:
     - not_null
     # - dbt_expectations.expect_column_values_to_be_of_type:
     #     column_type: int
+- name: bronze_fixtures
+  tests:
+  - has_expected_columns:
+      arguments:
+        column_names:
+        - filename
+        - ingest_datetime
