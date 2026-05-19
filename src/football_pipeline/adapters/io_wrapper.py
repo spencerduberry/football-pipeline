@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Protocol, runtime_checkable
 
 import attrs
+import polars as pl
 import yaml
 
 
@@ -12,6 +13,7 @@ class FileType(Enum):
     YAML = auto()
     FOOTBALL_API = auto()
     JSON = auto()
+    PARQUET = auto()
 
 
 @runtime_checkable
@@ -42,6 +44,8 @@ class IOWrapper:
                 request = urllib.request.Request(path, headers=headers, **kwargs)
                 with urllib.request.urlopen(request) as url:
                     return json.load(url)
+            case FileType.PARQUET:
+                return pl.scan_parquet(path, **kwargs)
             case _:
                 raise ValueError(f"Given invalid file type {file_type} for path {path}")
 
@@ -55,6 +59,9 @@ class IOWrapper:
                 return True
             case FileType.JSON:
                 save_path.write_text(json.dumps(data, **kwargs))
+                return True
+            case FileType.PARQUET:
+                data.write_parquet(path, **kwargs)
                 return True
             case _:
                 raise ValueError(f"Given invalid file type {file_type} for path {path}")
