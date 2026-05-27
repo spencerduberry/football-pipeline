@@ -7,6 +7,9 @@ run_tests:
 run_raw_layer:
 	uv run ./src/football_pipeline/stages/raw/raw_pipe.py --config-path ./configs/001_raw_layer.yaml
 
+run_raw_player_layer:
+	uv run ./src/football_pipeline/stages/raw/player_pipe.py --config-path ./configs/002_raw_player_layer.yaml
+
 run_all_dbt:
 	uv run dbt clean ; uv run dbt deps ; uv run dbt run ; uv run dbt test
 
