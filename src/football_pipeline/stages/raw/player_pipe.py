@@ -46,7 +46,7 @@ def get_api_responses(
     dfs = []
     fails = []
 
-    for player_id in range(min_player_id, max_player_id):
+    for player_id in range(min_player_id, max_player_id + 1):
         player_endpoint = f"{path}/{player_id}"
         try:
             api_response = repo.io.read(player_endpoint, FileType.FOOTBALL_API)
@@ -56,7 +56,9 @@ def get_api_responses(
     return dfs, fails
 
 
-def save_data(repo, save_path, date_time_str, dfs):
+def save_data(
+    repo: Repo, save_path: str, date_time_str: str, dfs: list[pl.DataFrame]
+) -> None:
     all_players = pl.concat(dfs)
     file_save_path = f"{save_path}/{date_time_str}.parquet"
     repo.io.write(file_save_path, all_players, FileType.PARQUET)
