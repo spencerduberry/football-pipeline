@@ -1,0 +1,4 @@
+save_root: "./data/000_raw"
+endpoint: https://fantasy.premierleague.com/api/element-summary
+min_player_id: 1
+max_player_id: 10 # 841
